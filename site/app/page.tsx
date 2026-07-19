@@ -1,4 +1,5 @@
 import Image from "next/image";
+import CheetaraHead3D from "./components/CheetaraHead3D";
 
 export default function Home() {
   return (
@@ -45,6 +46,15 @@ export default function Home() {
           Site em construção — em breve, mais informações sobre data,
           percurso e inscrições.
         </p>
+
+        <div className="mt-4 flex flex-col items-center gap-2">
+          <div className="h-72 w-72 sm:h-96 sm:w-96">
+            <CheetaraHead3D />
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Prévia 3D estilizada — o modelo definitivo da nossa onça vem por aí. Arraste para girar.
+          </p>
+        </div>
       </main>
 
       <footer className="relative z-10 h-2 w-full bg-gradient-cheetara" />
