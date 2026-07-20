@@ -80,15 +80,22 @@ export default function ScrollJaguarSection() {
           <CheetaraHead3D progress={progress} />
         </div>
 
-        <div className="relative z-10 flex w-full flex-col items-center gap-3 px-2 pt-2 pb-10 text-center sm:px-6 bg-[radial-gradient(ellipse_55%_85%_at_center,rgba(0,0,0,0.7),transparent_80%)]">
-          {/* Lettering oficial, direto do Drive; o PNG tem margem transparente
-              grande, compensada com scale (não afeta layout) */}
-          <h1 className="relative aspect-[2.45] w-full max-w-2xl overflow-hidden sm:max-w-3xl">
+        <div className="relative z-10 flex w-full flex-col items-center gap-1 px-2 pt-2 pb-10 text-center sm:gap-2 sm:px-6 bg-[radial-gradient(ellipse_55%_85%_at_center,rgba(0,0,0,0.7),transparent_80%)]">
+          {/* Lettering oficial, recortado em duas peças (assets tirados do
+              Drive, sem margem) pra "CHEETARAS" poder ficar maior que o
+              subtítulo, cada uma preenchendo a largura sem cortar nada. */}
+          <h1 className="flex w-full flex-col items-center gap-1 sm:gap-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/logo/cheetaras-lettering-trim.png"
-              alt="Corrida das Cheetaras"
-              className="absolute top-1/2 left-1/2 w-full max-w-none -translate-x-1/2 -translate-y-1/2 scale-100 [filter:drop-shadow(0_0_16px_rgba(255,255,255,0.5))_drop-shadow(0_2px_10px_rgba(0,0,0,0.8))]"
+              src="/logo/cheetaras-lettering-top.png"
+              alt="Corrida das"
+              className="w-full max-w-md drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] sm:max-w-xl"
+            />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo/cheetaras-lettering-bottom.png"
+              alt="Cheetaras"
+              className="w-full max-w-2xl drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] sm:max-w-3xl"
             />
           </h1>
         </div>

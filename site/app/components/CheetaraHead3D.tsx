@@ -87,7 +87,7 @@ function CheetaraMark({ progress }: { progress?: number }) {
       ref={group}
       rotation={[0, progress !== undefined ? SCROLL_ROTATION_START : 0, 0]}
     >
-      <mesh geometry={geometry} castShadow receiveShadow>
+      <mesh geometry={geometry}>
         <meshStandardMaterial
           vertexColors
           roughness={0.32}
@@ -105,11 +105,10 @@ export default function CheetaraHead3D({ progress }: { progress?: number }) {
     <Canvas
       camera={{ position: [0, 0.15, 3.6], fov: 40 }}
       dpr={[1, 2]}
-      shadows
-      gl={{ antialias: true }}
+      gl={{ antialias: true, alpha: true }}
     >
       <ambientLight intensity={0.75} />
-      <directionalLight position={[3, 4, 5]} intensity={1.3} castShadow />
+      <directionalLight position={[3, 4, 5]} intensity={1.3} />
       <directionalLight position={[-4, -1, -3]} intensity={0.6} color="#602088" />
       <directionalLight position={[0, -3, 2]} intensity={0.3} color="#f02090" />
 
