@@ -4,12 +4,18 @@ import { useEffect, useRef, useState } from "react";
 import CheetaraHead3D from "./CheetaraHead3D";
 
 // Vídeo de fundo em loop. Fonte original veio do Google Drive do organizador,
-// mas é servido a partir daqui (public/video/hero-loop.mp4), não em proxy
-// ao vivo: vídeo depende de Range requests para tocar/dar seek, e o Drive
-// não garante suporte a isso em toda requisição — proxiar ao vivo (como as
-// imagens) travaria ou pioraria o carregamento. Original intacto fica em
+// mas é servido a partir daqui (public/video/), não em proxy ao vivo: vídeo
+// depende de Range requests para tocar/dar seek, e o Drive não garante
+// suporte a isso em toda requisição — proxiar ao vivo (como as imagens)
+// travaria ou pioraria o carregamento. Original intacto fica em
 // assets-brutos/video/hero-loop-original.mp4.
-const BG_VIDEO = "/video/hero-loop.mp4";
+//
+// No mobile o vídeo é o quadro vertical completo, sem corte. No desktop
+// (sm+) usa a versão recortada só com a arena/banner (sem a pessoa em
+// primeiro plano), porque o quadro completo em tela larga jogaria o rosto
+// dela direto atrás do 3D/texto.
+const BG_VIDEO_MOBILE = "/video/hero-loop-vertical.mp4";
+const BG_VIDEO_DESKTOP = "/video/hero-loop.mp4";
 
 export default function ScrollJaguarSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -40,20 +46,17 @@ export default function ScrollJaguarSection() {
   return (
     <section ref={sectionRef} className="relative h-[220vh]">
       <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden bg-black">
-        {/* Fundo desfocado atrás do vídeo, só aparece nas barras que sobram
-            no mobile (onde o vídeo mantém a proporção original, sem cortar) */}
+        {/* Fundo desfocado, preenche as bordas que sobrarem no letterbox */}
         <video
           aria-hidden
           autoPlay
           loop
           muted
           playsInline
-          className="absolute inset-0 h-full w-full scale-110 object-cover opacity-50 blur-2xl"
-          src={BG_VIDEO}
+          className="absolute inset-0 h-full w-full scale-110 object-cover opacity-50 blur-2xl sm:hidden"
+          src={BG_VIDEO_MOBILE}
         />
-        {/* Vídeo da largada como fundo, em loop infinito e sem áudio.
-            No mobile mantém a proporção original (object-contain); a partir
-            de sm, preenche a tela cortando as bordas (object-cover). */}
+        {/* Mobile: vídeo vertical completo, sem cortar nenhuma borda */}
         <video
           aria-hidden
           autoPlay
@@ -61,8 +64,19 @@ export default function ScrollJaguarSection() {
           muted
           playsInline
           preload="auto"
-          className="absolute inset-0 h-full w-full object-contain sm:object-cover"
-          src={BG_VIDEO}
+          className="absolute inset-0 h-full w-full object-contain sm:hidden"
+          src={BG_VIDEO_MOBILE}
+        />
+        {/* Desktop (sm+): recorte só com a arena/banner, preenchendo a tela */}
+        <video
+          aria-hidden
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          className="absolute inset-0 hidden h-full w-full object-cover sm:block"
+          src={BG_VIDEO_DESKTOP}
         />
         {/* Overlay pra leitura do texto e tom da marca */}
         <div
