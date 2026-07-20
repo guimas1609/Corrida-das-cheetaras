@@ -50,7 +50,10 @@ const SPOTS: Array<[number, number, number, number]> = [
   [-0.25, 0.1, 0.75, 0.055],
 ];
 
-function JaguarHead() {
+const SCROLL_ROTATION_START = -1.4;
+const SCROLL_ROTATION_END = -0.5;
+
+function JaguarHead({ progress }: { progress?: number }) {
   const group = useRef<THREE.Group>(null);
 
   const craniumBase = useMemo(() => new THREE.IcosahedronGeometry(0.78, 1), []);
@@ -63,11 +66,29 @@ function JaguarHead() {
   const earGeo = useGradientGeometry(earBase, PURPLE, PINK, "y");
 
   useFrame((_, delta) => {
-    if (group.current) group.current.rotation.y += delta * 0.35;
+    if (!group.current) return;
+    if (progress !== undefined) {
+      const target = THREE.MathUtils.lerp(
+        SCROLL_ROTATION_START,
+        SCROLL_ROTATION_END,
+        progress
+      );
+      group.current.rotation.y = THREE.MathUtils.damp(
+        group.current.rotation.y,
+        target,
+        6,
+        delta
+      );
+    } else {
+      group.current.rotation.y += delta * 0.35;
+    }
   });
 
   return (
-    <group ref={group} rotation={[0, -0.5, 0]}>
+    <group
+      ref={group}
+      rotation={[0, progress !== undefined ? SCROLL_ROTATION_START : -0.5, 0]}
+    >
       {/* Cranium */}
       <mesh geometry={craniumGeo} scale={[0.9, 0.85, 0.95]} castShadow receiveShadow>
         {gradientMat}
@@ -140,7 +161,9 @@ function JaguarHead() {
   );
 }
 
-export default function CheetaraHead3D() {
+export default function CheetaraHead3D({ progress }: { progress?: number }) {
+  const scrollMode = progress !== undefined;
+
   return (
     <Canvas
       camera={{ position: [2.9, 0.55, 3.1], fov: 30 }}
@@ -152,18 +175,24 @@ export default function CheetaraHead3D() {
       <directionalLight position={[3, 4, 5]} intensity={1.2} castShadow />
       <directionalLight position={[-3, -1, -4]} intensity={0.5} color="#602088" />
 
-      <Float speed={1.5} rotationIntensity={0.15} floatIntensity={0.4}>
-        <JaguarHead />
+      <Float
+        speed={1.5}
+        rotationIntensity={scrollMode ? 0.05 : 0.15}
+        floatIntensity={scrollMode ? 0.15 : 0.4}
+      >
+        <JaguarHead progress={progress} />
       </Float>
 
-      <OrbitControls
-        enableZoom={false}
-        enablePan={false}
-        autoRotate
-        autoRotateSpeed={1.2}
-        minPolarAngle={Math.PI / 2.6}
-        maxPolarAngle={Math.PI / 1.8}
-      />
+      {!scrollMode && (
+        <OrbitControls
+          enableZoom={false}
+          enablePan={false}
+          autoRotate
+          autoRotateSpeed={1.2}
+          minPolarAngle={Math.PI / 2.6}
+          maxPolarAngle={Math.PI / 1.8}
+        />
+      )}
     </Canvas>
   );
 }
