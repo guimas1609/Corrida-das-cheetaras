@@ -46,17 +46,9 @@ export default function ScrollJaguarSection() {
   return (
     <section ref={sectionRef} className="relative h-[220vh]">
       <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden bg-black">
-        {/* Fundo desfocado, preenche as bordas que sobrarem no letterbox */}
-        <video
-          aria-hidden
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 h-full w-full scale-110 object-cover opacity-50 blur-2xl sm:hidden"
-          src={BG_VIDEO_MOBILE}
-        />
-        {/* Mobile: vídeo vertical completo, sem cortar nenhuma borda */}
+        {/* Mobile: vídeo vertical completo, preenchendo a tela de ponta a
+            ponta (o recorte é só uma aparada mínima nas laterais, não corta
+            nada em cima/embaixo) */}
         <video
           aria-hidden
           autoPlay
@@ -64,7 +56,7 @@ export default function ScrollJaguarSection() {
           muted
           playsInline
           preload="auto"
-          className="absolute inset-0 h-full w-full object-contain sm:hidden"
+          className="absolute inset-0 h-full w-full object-cover sm:hidden"
           src={BG_VIDEO_MOBILE}
         />
         {/* Desktop (sm+): recorte só com a arena/banner, preenchendo a tela */}
@@ -84,19 +76,19 @@ export default function ScrollJaguarSection() {
           className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/35 to-black/80"
         />
 
-        <div className="relative z-10 h-[32vh] w-full max-w-xs sm:h-[38vh] sm:max-w-sm">
+        <div className="relative z-10 h-[20vh] w-full max-w-[200px] sm:h-[38vh] sm:max-w-sm">
           <CheetaraHead3D progress={progress} />
         </div>
 
-        <div className="relative z-10 flex w-full flex-col items-center gap-3 px-6 pt-2 pb-10 text-center bg-[radial-gradient(ellipse_55%_85%_at_center,rgba(0,0,0,0.7),transparent_80%)]">
+        <div className="relative z-10 flex w-full flex-col items-center gap-3 px-2 pt-2 pb-10 text-center sm:px-6 bg-[radial-gradient(ellipse_55%_85%_at_center,rgba(0,0,0,0.7),transparent_80%)]">
           {/* Lettering oficial, direto do Drive; o PNG tem margem transparente
               grande, compensada com scale (não afeta layout) */}
-          <h1 className="relative aspect-[7/3] w-full max-w-2xl overflow-hidden sm:max-w-3xl">
+          <h1 className="relative aspect-[2.45] w-full max-w-2xl overflow-hidden sm:max-w-3xl">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/api/drive-image?id=1No2iKYxW_5C4XCkVbJza_XRpxwUnnbAc&w=1200"
+              src="/logo/cheetaras-lettering-trim.png"
               alt="Corrida das Cheetaras"
-              className="absolute top-1/2 left-1/2 w-full max-w-none -translate-x-1/2 -translate-y-1/2 scale-[1.9] [filter:drop-shadow(0_0_16px_rgba(255,255,255,0.5))_drop-shadow(0_2px_10px_rgba(0,0,0,0.8))]"
+              className="absolute top-1/2 left-1/2 w-full max-w-none -translate-x-1/2 -translate-y-1/2 scale-100 [filter:drop-shadow(0_0_16px_rgba(255,255,255,0.5))_drop-shadow(0_2px_10px_rgba(0,0,0,0.8))]"
             />
           </h1>
         </div>
