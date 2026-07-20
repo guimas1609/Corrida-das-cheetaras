@@ -49,19 +49,19 @@ export default function ScrollJaguarSection() {
           className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/35 to-black/80"
         />
 
-        <div className="relative z-10 h-[55vh] w-full max-w-xl">
+        <div className="relative z-10 h-[32vh] w-full max-w-xs sm:h-[38vh] sm:max-w-sm">
           <CheetaraHead3D progress={progress} />
         </div>
 
-        <div className="relative z-10 flex w-full flex-col items-center gap-3 px-10 pt-6 pb-10 text-center bg-[radial-gradient(ellipse_45%_75%_at_center,rgba(0,0,0,0.7),transparent_80%)]">
+        <div className="relative z-10 flex w-full flex-col items-center gap-3 px-6 pt-2 pb-10 text-center bg-[radial-gradient(ellipse_55%_85%_at_center,rgba(0,0,0,0.7),transparent_80%)]">
           {/* Lettering oficial, direto do Drive; o PNG tem margem transparente
               grande, compensada com scale (não afeta layout) */}
-          <h1 className="relative aspect-[7/3] w-full max-w-lg sm:max-w-2xl">
+          <h1 className="relative aspect-[7/3] w-full max-w-2xl overflow-hidden sm:max-w-3xl">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/api/drive-image?id=1No2iKYxW_5C4XCkVbJza_XRpxwUnnbAc&w=1200"
               alt="Corrida das Cheetaras"
-              className="absolute top-1/2 left-1/2 w-full max-w-none -translate-x-1/2 -translate-y-1/2 scale-[1.85] [filter:drop-shadow(0_0_16px_rgba(255,255,255,0.5))_drop-shadow(0_2px_10px_rgba(0,0,0,0.8))]"
+              className="absolute top-1/2 left-1/2 w-full max-w-none -translate-x-1/2 -translate-y-1/2 scale-[1.9] [filter:drop-shadow(0_0_16px_rgba(255,255,255,0.5))_drop-shadow(0_2px_10px_rgba(0,0,0,0.8))]"
             />
           </h1>
           <p className="text-lg font-medium text-white/90">
