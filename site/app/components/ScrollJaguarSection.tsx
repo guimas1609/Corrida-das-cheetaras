@@ -39,7 +39,7 @@ export default function ScrollJaguarSection() {
           className="max-w-xs text-center text-xs text-muted-foreground transition-opacity duration-500"
           style={{ opacity: progress > 0.15 ? 1 : 0 }}
         >
-          Prévia 3D estilizada — o modelo definitivo da nossa onça vem por aí.
+          A marca da Corrida das Cheetaras em 3D.
         </p>
       </div>
     </section>
