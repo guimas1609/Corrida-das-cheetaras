@@ -3,10 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import CheetaraHead3D from "./CheetaraHead3D";
 
-// Foto oficial da largada (drone), servida direto do Google Drive por opção
-// do organizador — se o link quebrar, mover o arquivo para public/images/.
+// Foto oficial da largada (drone). O arquivo mora no Google Drive e é
+// servido via /api/drive-image (proxy com cache — ver comentário na rota).
 const BG_URL =
-  "https://drive.google.com/thumbnail?id=1_hmb4Z2o-9wb54lkDmY4PJR5QUaqRm9w&sz=w1920";
+  "/api/drive-image?id=1_hmb4Z2o-9wb54lkDmY4PJR5QUaqRm9w&w=1920";
 
 export default function ScrollJaguarSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -46,16 +46,23 @@ export default function ScrollJaguarSection() {
         {/* Overlay pra leitura do texto e tom da marca */}
         <div
           aria-hidden
-          className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/25 to-black/70"
+          className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/35 to-black/80"
         />
 
         <div className="relative z-10 h-[55vh] w-full max-w-xl">
           <CheetaraHead3D progress={progress} />
         </div>
 
-        <div className="relative z-10 flex flex-col items-center gap-3 px-6 pb-10 text-center">
-          <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">
-            Corrida das Cheetaras
+        <div className="relative z-10 flex w-full flex-col items-center gap-3 px-10 pt-6 pb-10 text-center bg-[radial-gradient(ellipse_45%_75%_at_center,rgba(0,0,0,0.7),transparent_80%)]">
+          {/* Lettering oficial, direto do Drive; o PNG tem margem transparente
+              grande, compensada com scale (não afeta layout) */}
+          <h1 className="relative aspect-[7/3] w-full max-w-lg sm:max-w-2xl">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/api/drive-image?id=1No2iKYxW_5C4XCkVbJza_XRpxwUnnbAc&w=1200"
+              alt="Corrida das Cheetaras"
+              className="absolute top-1/2 left-1/2 w-full max-w-none -translate-x-1/2 -translate-y-1/2 scale-[1.85] [filter:drop-shadow(0_0_16px_rgba(255,255,255,0.5))_drop-shadow(0_2px_10px_rgba(0,0,0,0.8))]"
+            />
           </h1>
           <p className="text-lg font-medium text-white/90">
             A maior corrida do Maranhão
