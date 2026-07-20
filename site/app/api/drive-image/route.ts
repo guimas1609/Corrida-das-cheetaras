@@ -5,7 +5,8 @@ import { NextRequest } from "next/server";
 // responde HTML e o Chrome bloqueia (ORB). Esta rota proxia a imagem no
 // servidor e deixa a CDN da Vercel cachear, então o Drive é consultado raro.
 const ALLOWED_IDS = new Set([
-  "1_hmb4Z2o-9wb54lkDmY4PJR5QUaqRm9w", // foto aérea da largada (fundo do hero)
+  "1_hmb4Z2o-9wb54lkDmY4PJR5QUaqRm9w", // foto aérea da largada, colorida (não usada atualmente)
+  "1tUn87JOijh6U-nnzwiCoGOaPxi9iytfw", // foto aérea da largada, P&B (fundo do hero)
   "1No2iKYxW_5C4XCkVbJza_XRpxwUnnbAc", // lettering "Corrida das Cheetaras"
 ]);
 

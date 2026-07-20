@@ -3,10 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import CheetaraHead3D from "./CheetaraHead3D";
 
-// Foto oficial da largada (drone). O arquivo mora no Google Drive e é
+// Foto oficial da largada (drone, P&B). O arquivo mora no Google Drive e é
 // servido via /api/drive-image (proxy com cache — ver comentário na rota).
 const BG_URL =
-  "/api/drive-image?id=1_hmb4Z2o-9wb54lkDmY4PJR5QUaqRm9w&w=1920";
+  "/api/drive-image?id=1tUn87JOijh6U-nnzwiCoGOaPxi9iytfw&w=1920";
 
 export default function ScrollJaguarSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -64,12 +64,6 @@ export default function ScrollJaguarSection() {
               className="absolute top-1/2 left-1/2 w-full max-w-none -translate-x-1/2 -translate-y-1/2 scale-[1.9] [filter:drop-shadow(0_0_16px_rgba(255,255,255,0.5))_drop-shadow(0_2px_10px_rgba(0,0,0,0.8))]"
             />
           </h1>
-          <p className="text-lg font-medium text-white/90">
-            A maior corrida do Maranhão
-          </p>
-          <p className="text-sm tracking-wide text-white/70 uppercase">
-            Bacabal · Maranhão
-          </p>
         </div>
       </div>
     </section>
