@@ -39,8 +39,21 @@ export default function ScrollJaguarSection() {
 
   return (
     <section ref={sectionRef} className="relative h-[220vh]">
-      <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden">
-        {/* Vídeo da largada como fundo, em loop infinito e sem áudio */}
+      <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden bg-black">
+        {/* Fundo desfocado atrás do vídeo, só aparece nas barras que sobram
+            no mobile (onde o vídeo mantém a proporção original, sem cortar) */}
+        <video
+          aria-hidden
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 h-full w-full scale-110 object-cover opacity-50 blur-2xl"
+          src={BG_VIDEO}
+        />
+        {/* Vídeo da largada como fundo, em loop infinito e sem áudio.
+            No mobile mantém a proporção original (object-contain); a partir
+            de sm, preenche a tela cortando as bordas (object-cover). */}
         <video
           aria-hidden
           autoPlay
@@ -48,7 +61,7 @@ export default function ScrollJaguarSection() {
           muted
           playsInline
           preload="auto"
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-contain sm:object-cover"
           src={BG_VIDEO}
         />
         {/* Overlay pra leitura do texto e tom da marca */}
