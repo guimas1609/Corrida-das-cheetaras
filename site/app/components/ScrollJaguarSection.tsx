@@ -3,10 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import CheetaraHead3D from "./CheetaraHead3D";
 
-// Foto oficial da largada (drone, P&B). O arquivo mora no Google Drive e é
-// servido via /api/drive-image (proxy com cache — ver comentário na rota).
-const BG_URL =
-  "/api/drive-image?id=1tUn87JOijh6U-nnzwiCoGOaPxi9iytfw&w=1920";
+// Vídeo de fundo em loop. Fonte original veio do Google Drive do organizador,
+// mas é servido a partir daqui (public/video/hero-loop.mp4), não em proxy
+// ao vivo: vídeo depende de Range requests para tocar/dar seek, e o Drive
+// não garante suporte a isso em toda requisição — proxiar ao vivo (como as
+// imagens) travaria ou pioraria o carregamento. Original intacto fica em
+// assets-brutos/video/hero-loop-original.mp4.
+const BG_VIDEO = "/video/hero-loop.mp4";
 
 export default function ScrollJaguarSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -37,11 +40,16 @@ export default function ScrollJaguarSection() {
   return (
     <section ref={sectionRef} className="relative h-[220vh]">
       <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden">
-        {/* Foto da largada como fundo */}
-        <div
+        {/* Vídeo da largada como fundo, em loop infinito e sem áudio */}
+        <video
           aria-hidden
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${BG_URL})` }}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          className="absolute inset-0 h-full w-full object-cover"
+          src={BG_VIDEO}
         />
         {/* Overlay pra leitura do texto e tom da marca */}
         <div

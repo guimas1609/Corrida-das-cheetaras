@@ -1,4 +1,5 @@
-# Vídeo e modelos 3D ficam em Git LFS (podem ficar grandes)
+# Vídeo e modelos 3D em assets-brutos/ (fontes originais, nunca lidos pelo
+# build da Vercel) ficam em Git LFS — podem ficar grandes.
 *.webm filter=lfs diff=lfs merge=lfs -text
 *.mov filter=lfs diff=lfs merge=lfs -text
 *.mp4 filter=lfs diff=lfs merge=lfs -text
@@ -9,8 +10,21 @@
 *.hdr filter=lfs diff=lfs merge=lfs -text
 *.exr filter=lfs diff=lfs merge=lfs -text
 
-# Imagens ficam como blobs normais do Git (a Vercel não busca LFS por padrão
-# e o Next.js precisa decodificar os ícones em app/ durante o build)
+# Tudo em site/ (inclusive site/public/) fica como blob normal do Git: a
+# Vercel não busca objetos do Git LFS no build, então qualquer arquivo que o
+# site sirva ou processe precisa estar acessível direto (mesmo motivo por
+# trás de tirar os PNGs do LFS — ver commit "Remove imagens do Git LFS").
+site/**/*.webm -filter -diff -merge -text
+site/**/*.mov -filter -diff -merge -text
+site/**/*.mp4 -filter -diff -merge -text
+site/**/*.glb -filter -diff -merge -text
+site/**/*.gltf -filter -diff -merge -text
+site/**/*.fbx -filter -diff -merge -text
+site/**/*.obj -filter -diff -merge -text
+site/**/*.hdr -filter -diff -merge -text
+site/**/*.exr -filter -diff -merge -text
+
+# Imagens ficam como blobs normais do Git em qualquer lugar (mesmo motivo).
 *.png -text
 *.jpg -text
 *.jpeg -text
