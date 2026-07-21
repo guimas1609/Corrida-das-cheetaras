@@ -1,26 +1,29 @@
-import PhotoPlaceholder from "./PhotoPlaceholder";
 import Reveal from "./Reveal";
 
-/** Conteúdo genérico — substituir por texto/fotos reais do organizador. */
-export default function MuseumSection() {
+const SHIRT_URL = "/api/drive-image?id=19ISR32JWRHrT4u1u4P-Fhfyw71LEtoYQ&w=1200";
+
+export default function KitSection() {
   return (
     <section className="mx-auto flex w-full max-w-5xl flex-col items-center gap-10 px-6 py-24 sm:py-32 md:flex-row md:gap-16">
       <Reveal className="w-full md:w-1/2">
-        <PhotoPlaceholder icon="🏛️" className="aspect-[4/5] w-full" />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={SHIRT_URL}
+          alt="Camiseta oficial da Corrida das Cheetaras 2026"
+          className="aspect-[4/5] w-full rounded-3xl object-cover shadow-[0_8px_30px_rgba(96,32,136,0.15)]"
+        />
       </Reveal>
 
       <Reveal delay={120} className="w-full md:w-1/2">
         <span className="text-xs font-semibold tracking-widest text-cheetara-pink uppercase">
-          Museu Cheetara
+          Kit oficial
         </span>
         <h2 className="mt-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-          A história de cada edição, guardada com carinho.
+          Kit Cheetaras 2026
         </h2>
         <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-          Um espaço dedicado à trajetória da Corrida das Cheetaras — troféus,
-          recordes, fotos de largada e chegada, e as memórias de quem já
-          fez parte dessa história. Em breve, um acervo completo das
-          edições anteriores.
+          A camiseta oficial da VI Corrida das Cheetaras — sua companheira
+          do aquecimento até a linha de chegada.
         </p>
       </Reveal>
     </section>
