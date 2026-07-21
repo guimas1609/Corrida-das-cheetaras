@@ -79,7 +79,7 @@ function CheetaraMark() {
 export default function CheetaraHead3D() {
   return (
     <Canvas
-      camera={{ position: [0, 0.15, 3.6], fov: 40 }}
+      camera={{ position: [0, 0.15, 4.6], fov: 40 }}
       dpr={[1, 2]}
       gl={{ antialias: true, alpha: true }}
     >
@@ -88,7 +88,7 @@ export default function CheetaraHead3D() {
       <directionalLight position={[-4, -1, -3]} intensity={0.6} color="#602088" />
       <directionalLight position={[0, -3, 2]} intensity={0.3} color="#f02090" />
 
-      <Float speed={1.5} rotationIntensity={0.1} floatIntensity={0.35}>
+      <Float speed={1.5} rotationIntensity={0.06} floatIntensity={0.18}>
         <CheetaraMark />
       </Float>
 
