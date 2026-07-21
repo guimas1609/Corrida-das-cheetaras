@@ -19,23 +19,23 @@ const BG_VIDEO_DESKTOP = "/video/hero-loop.mp4";
 
 export default function ScrollJaguarSection() {
   return (
-    <section className="relative flex h-screen flex-col items-center justify-center overflow-hidden bg-black">
-      {/* Mobile: vídeo vertical completo, preenchendo a tela de ponta a
-          ponta (o recorte é só uma aparada mínima nas laterais, não corta
-          nada em cima/embaixo) */}
+    <section className="relative flex h-screen flex-col items-center justify-center overflow-hidden">
+      {/* Vídeo bem sutil por cima do fundo holográfico (não mais o fundo
+          principal) — mobile: quadro vertical completo, sem corte */}
       <BackgroundVideo
-        className="absolute inset-0 h-full w-full object-cover sm:hidden"
+        className="absolute inset-0 h-full w-full object-cover opacity-25 sm:hidden"
         src={BG_VIDEO_MOBILE}
       />
-      {/* Desktop (sm+): recorte só com a arena/banner, preenchendo a tela */}
+      {/* Desktop (sm+): recorte só com a arena/banner */}
       <BackgroundVideo
-        className="absolute inset-0 hidden h-full w-full object-cover sm:block"
+        className="absolute inset-0 hidden h-full w-full object-cover opacity-20 sm:block"
         src={BG_VIDEO_DESKTOP}
       />
-      {/* Overlay pra leitura do texto e tom da marca */}
+      {/* Leve clareamento pra unificar o vídeo apagado com o fundo
+          holográfico ao redor */}
       <div
         aria-hidden
-        className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/35 to-black/80"
+        className="absolute inset-0 bg-gradient-to-b from-white/10 via-white/40 to-white/60"
       />
 
       {/* 3D independente de scroll: gira sozinha e também pode ser

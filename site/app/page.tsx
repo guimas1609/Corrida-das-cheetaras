@@ -2,7 +2,7 @@ import ScrollJaguarSection from "./components/ScrollJaguarSection";
 
 export default function Home() {
   return (
-    <div className="relative flex flex-1 flex-col bg-background">
+    <div className="relative flex flex-1 flex-col">
       <ScrollJaguarSection />
 
       <section className="flex flex-col items-center gap-3 px-6 py-20 text-center">
