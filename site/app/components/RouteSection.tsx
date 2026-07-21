@@ -21,13 +21,13 @@ export default function RouteSection() {
   return (
     <section className="mx-auto w-full max-w-5xl px-6 py-24 sm:py-32">
       <Reveal className="text-center">
-        <span className="text-xs font-semibold tracking-widest text-cheetara-pink uppercase">
+        <span className="text-sm font-semibold tracking-widest text-cheetara-pink uppercase">
           Percurso
         </span>
-        <h2 className="mt-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+        <h2 className="mt-3 text-5xl font-black tracking-tight text-foreground sm:text-6xl">
           Escolha sua distância
         </h2>
-        <p className="mx-auto mt-4 max-w-md text-base text-muted-foreground">
+        <p className="mx-auto mt-5 max-w-md text-lg text-muted-foreground">
           Valores de exemplo — o percurso e as distâncias oficiais serão
           divulgados em breve.
         </p>
@@ -40,11 +40,11 @@ export default function RouteSection() {
               key={d.km}
               className="flex flex-col items-center gap-1 rounded-3xl border border-black/5 bg-white/50 py-10 shadow-[0_8px_30px_rgba(96,32,136,0.1)] backdrop-blur-sm"
             >
-              <span className="text-gradient-cheetara text-5xl font-bold">
+              <span className="text-gradient-cheetara text-7xl font-black">
                 {d.km}
-                <span className="text-2xl align-top">km</span>
+                <span className="text-3xl align-top">km</span>
               </span>
-              <span className="text-sm text-muted-foreground">{d.label}</span>
+              <span className="text-base text-muted-foreground">{d.label}</span>
             </div>
           ))}
         </div>
@@ -52,14 +52,14 @@ export default function RouteSection() {
 
       <Reveal delay={220}>
         <div className="mt-16 text-center">
-          <h3 className="text-lg font-semibold text-foreground">
+          <h3 className="text-2xl font-bold text-foreground">
             Faixas etárias
           </h3>
-          <div className="mt-5 flex flex-wrap justify-center gap-3">
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
             {AGE_GROUPS.map((group) => (
               <span
                 key={group}
-                className="rounded-full border border-black/5 bg-white/60 px-4 py-2 text-sm text-foreground backdrop-blur-sm"
+                className="rounded-full border border-black/5 bg-white/60 px-5 py-2.5 text-base text-foreground backdrop-blur-sm"
               >
                 {group}
               </span>

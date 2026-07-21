@@ -15,13 +15,13 @@ export default function KitSection() {
       </Reveal>
 
       <Reveal delay={120} className="w-full md:w-1/2">
-        <span className="text-xs font-semibold tracking-widest text-cheetara-pink uppercase">
+        <span className="text-sm font-semibold tracking-widest text-cheetara-pink uppercase">
           Kit oficial
         </span>
-        <h2 className="mt-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+        <h2 className="mt-3 text-5xl font-black tracking-tight text-foreground sm:text-6xl">
           Kit Cheetaras 2026
         </h2>
-        <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+        <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
           A camiseta oficial da VI Corrida das Cheetaras — sua companheira
           do aquecimento até a linha de chegada.
         </p>
