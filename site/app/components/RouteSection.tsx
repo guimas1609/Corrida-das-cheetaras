@@ -1,11 +1,10 @@
 import Reveal from "./Reveal";
 
-// Valores genéricos (distâncias e faixas etárias comuns em corridas de
-// rua) — substituir pelos números oficiais da Corrida das Cheetaras.
+// Distâncias oficiais da Corrida das Cheetaras. Faixas etárias ainda são
+// genéricas — substituir pelos números oficiais quando definidos.
 const DISTANCES = [
-  { km: "5", label: "Corrida/Caminhada" },
-  { km: "10", label: "Corrida" },
-  { km: "21", label: "Meia Maratona" },
+  { km: "2,5", label: "Caminhada/Corrida" },
+  { km: "5", label: "Corrida" },
 ];
 
 const AGE_GROUPS = [
@@ -28,13 +27,12 @@ export default function RouteSection() {
           Escolha sua distância
         </h2>
         <p className="mx-auto mt-5 max-w-md text-lg text-muted-foreground">
-          Valores de exemplo — o percurso e as distâncias oficiais serão
-          divulgados em breve.
+          Duas modalidades pra todo mundo participar.
         </p>
       </Reveal>
 
       <Reveal delay={120}>
-        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-3">
+        <div className="mx-auto mt-10 grid max-w-xl grid-cols-1 gap-5 sm:grid-cols-2">
           {DISTANCES.map((d) => (
             <div
               key={d.km}
