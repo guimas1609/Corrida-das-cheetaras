@@ -20,6 +20,22 @@ const BG_VIDEO_DESKTOP = "/video/hero-loop.mp4";
 export default function ScrollJaguarSection() {
   return (
     <section className="relative flex h-screen flex-col items-center justify-center overflow-hidden">
+      {/* Header fixo no topo do hero: logo à esquerda, menu hambúrguer
+          (degradê da marca) à direita */}
+      <header className="absolute inset-x-0 top-0 z-20 flex items-center justify-between px-6 pt-6">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/logo/cheetaras-mark.png"
+          alt="Corrida das Cheetaras"
+          className="h-10 w-10 drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
+        />
+        <button type="button" aria-label="Abrir menu" className="flex flex-col gap-1.5 p-1">
+          <span className="h-0.5 w-7 rounded-full bg-gradient-cheetara" />
+          <span className="h-0.5 w-7 rounded-full bg-gradient-cheetara" />
+          <span className="h-0.5 w-7 rounded-full bg-gradient-cheetara" />
+        </button>
+      </header>
+
       {/* Vídeo bem sutil por cima do fundo holográfico (não mais o fundo
           principal) — mobile: quadro vertical completo, sem corte */}
       <BackgroundVideo
