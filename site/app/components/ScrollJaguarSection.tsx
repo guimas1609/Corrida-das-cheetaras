@@ -1,6 +1,7 @@
 "use client";
 
 import CheetaraHead3D from "./CheetaraHead3D";
+import BackgroundVideo from "./BackgroundVideo";
 
 // Vídeo de fundo em loop. Fonte original veio do Google Drive do organizador,
 // mas é servido a partir daqui (public/video/), não em proxy ao vivo: vídeo
@@ -22,24 +23,12 @@ export default function ScrollJaguarSection() {
       {/* Mobile: vídeo vertical completo, preenchendo a tela de ponta a
           ponta (o recorte é só uma aparada mínima nas laterais, não corta
           nada em cima/embaixo) */}
-      <video
-        aria-hidden
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="auto"
+      <BackgroundVideo
         className="absolute inset-0 h-full w-full object-cover sm:hidden"
         src={BG_VIDEO_MOBILE}
       />
       {/* Desktop (sm+): recorte só com a arena/banner, preenchendo a tela */}
-      <video
-        aria-hidden
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="auto"
+      <BackgroundVideo
         className="absolute inset-0 hidden h-full w-full object-cover sm:block"
         src={BG_VIDEO_DESKTOP}
       />
