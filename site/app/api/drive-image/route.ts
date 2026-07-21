@@ -17,7 +17,6 @@ const ALLOWED_IDS = new Set([
   "1OOVFUAxA6pi2C8jvOQwAhwPzUk7q4g7V", // museu cheetaras — foto 4
   "1lTcDUy1ySWuWd9Kz5UrjAOtDuW2q1PJE", // museu cheetaras — foto 5
   "1wTI0_0pCDxY_gFtib5Yg1Smt8N3BtX4y", // museu cheetaras — foto 6
-  "144Ry6dzj9ZD2RG3I9I87cXfHTRwFzQva", // fundo desktop (teste, baixa opacidade)
 ]);
 
 const ALLOWED_WIDTHS = new Set(["800", "1200", "1920"]);

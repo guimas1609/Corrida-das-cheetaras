@@ -31,7 +31,7 @@ export default function MuseumSection() {
   }, [index]);
 
   return (
-    <section className="mx-auto flex w-full max-w-md flex-col items-center gap-8 px-6 py-24 text-center sm:py-32">
+    <section className="mx-auto flex w-full max-w-md flex-col items-center gap-8 px-6 py-24 text-center sm:max-w-3xl sm:py-32">
       <Reveal>
         <span className="text-xs font-semibold tracking-widest text-cheetara-pink uppercase">
           Museu Cheetaras
@@ -41,7 +41,7 @@ export default function MuseumSection() {
         </h2>
       </Reveal>
 
-      <Reveal delay={120} className="relative flex w-full max-w-xs items-center justify-center">
+      <Reveal delay={120} className="relative flex w-full max-w-xs items-center justify-center sm:max-w-2xl">
         <button
           type="button"
           aria-label="Foto anterior"
@@ -51,7 +51,7 @@ export default function MuseumSection() {
           ‹
         </button>
 
-        <div className="aspect-[3/4] w-full overflow-hidden rounded-3xl shadow-[0_8px_30px_rgba(96,32,136,0.15)]">
+        <div className="aspect-[3/4] w-full overflow-hidden rounded-3xl shadow-[0_8px_30px_rgba(96,32,136,0.15)] sm:aspect-[16/9]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={PHOTOS[index]}
