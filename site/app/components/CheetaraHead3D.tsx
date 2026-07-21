@@ -66,7 +66,7 @@ function CheetaraMark() {
   return (
     <group ref={group}>
       <mesh geometry={geometry}>
-        <meshStandardMaterial vertexColors roughness={0.32} metalness={0.25} />
+        <meshStandardMaterial vertexColors roughness={0.4} metalness={0.1} />
       </mesh>
     </group>
   );
@@ -83,10 +83,11 @@ export default function CheetaraHead3D() {
       dpr={[1, 2]}
       gl={{ antialias: true, alpha: true }}
     >
-      <ambientLight intensity={0.75} />
-      <directionalLight position={[3, 4, 5]} intensity={1.3} />
-      <directionalLight position={[-4, -1, -3]} intensity={0.6} color="#602088" />
-      <directionalLight position={[0, -3, 2]} intensity={0.3} color="#f02090" />
+      <ambientLight intensity={1.1} />
+      <directionalLight position={[3, 4, 5]} intensity={1.5} />
+      <directionalLight position={[0, 0.2, 5]} intensity={0.6} />
+      <directionalLight position={[-4, -1, -3]} intensity={0.5} color="#602088" />
+      <directionalLight position={[0, -3, 2]} intensity={0.45} color="#f02090" />
 
       <Float speed={1.5} rotationIntensity={0.06} floatIntensity={0.18}>
         <CheetaraMark />
