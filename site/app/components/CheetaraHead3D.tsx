@@ -10,10 +10,6 @@ import { MARK_PATH, MARK_VIEWBOX } from "./cheetaraMarkPath";
 const PINK = new THREE.Color("#f02090");
 const PURPLE = new THREE.Color("#602088");
 
-// Pose final de frente pra câmera (câmera fica em x=0), começando de quase perfil.
-const SCROLL_ROTATION_START = -Math.PI * 0.85;
-const SCROLL_ROTATION_END = 0;
-
 /**
  * Extrusão 3D da silhueta oficial do mark (cabeça da cheetah), com o
  * gradiente rosa→roxo da marca aplicado por vértice ao longo do eixo X.
@@ -59,48 +55,28 @@ function useMarkGeometry() {
   }, []);
 }
 
-function CheetaraMark({ progress }: { progress?: number }) {
+function CheetaraMark() {
   const group = useRef<THREE.Group>(null);
   const geometry = useMarkGeometry();
 
   useFrame((_, delta) => {
-    if (!group.current) return;
-    if (progress !== undefined) {
-      const target = THREE.MathUtils.lerp(
-        SCROLL_ROTATION_START,
-        SCROLL_ROTATION_END,
-        progress
-      );
-      group.current.rotation.y = THREE.MathUtils.damp(
-        group.current.rotation.y,
-        target,
-        6,
-        delta
-      );
-    } else {
-      group.current.rotation.y += delta * 0.35;
-    }
+    if (group.current) group.current.rotation.y += delta * 0.35;
   });
 
   return (
-    <group
-      ref={group}
-      rotation={[0, progress !== undefined ? SCROLL_ROTATION_START : 0, 0]}
-    >
+    <group ref={group}>
       <mesh geometry={geometry}>
-        <meshStandardMaterial
-          vertexColors
-          roughness={0.32}
-          metalness={0.25}
-        />
+        <meshStandardMaterial vertexColors roughness={0.32} metalness={0.25} />
       </mesh>
     </group>
   );
 }
 
-export default function CheetaraHead3D({ progress }: { progress?: number }) {
-  const scrollMode = progress !== undefined;
-
+/**
+ * Sempre gira sozinha e sempre pode ser arrastada com o dedo/mouse —
+ * totalmente independente de scroll ou de qualquer outro estado da página.
+ */
+export default function CheetaraHead3D() {
   return (
     <Canvas
       camera={{ position: [0, 0.15, 3.6], fov: 40 }}
@@ -112,24 +88,18 @@ export default function CheetaraHead3D({ progress }: { progress?: number }) {
       <directionalLight position={[-4, -1, -3]} intensity={0.6} color="#602088" />
       <directionalLight position={[0, -3, 2]} intensity={0.3} color="#f02090" />
 
-      <Float
-        speed={1.5}
-        rotationIntensity={scrollMode ? 0.05 : 0.1}
-        floatIntensity={scrollMode ? 0.15 : 0.35}
-      >
-        <CheetaraMark progress={progress} />
+      <Float speed={1.5} rotationIntensity={0.1} floatIntensity={0.35}>
+        <CheetaraMark />
       </Float>
 
-      {!scrollMode && (
-        <OrbitControls
-          enableZoom={false}
-          enablePan={false}
-          autoRotate
-          autoRotateSpeed={1.2}
-          minPolarAngle={Math.PI / 2.6}
-          maxPolarAngle={Math.PI / 1.8}
-        />
-      )}
+      <OrbitControls
+        enableZoom={false}
+        enablePan={false}
+        autoRotate
+        autoRotateSpeed={1.2}
+        minPolarAngle={Math.PI / 2.6}
+        maxPolarAngle={Math.PI / 1.8}
+      />
     </Canvas>
   );
 }
