@@ -1,7 +1,7 @@
 import Reveal from "./Reveal";
 
-const TROPHY_URL = "/api/drive-image?id=1tJYS5Kq1yjH-zFGNVbZuZQX5EmZueJYr&w=1200";
-const MEDAL_URL = "/api/drive-image?id=1MilxH1U4owY_oRDBi4KWQukK6ziqOWXK&w=1200";
+const TROPHY_URL = "/api/drive-image?id=1P0Z5S8son1FKHLjtUolab3v_rYfJGIEP&w=1200";
+const MEDAL_URL = "/api/drive-image?id=1D_YfWTZWyAdSzIEFK8Jps0u6OiJuvkoW&w=1200";
 
 export default function TrophyGallery() {
   return (

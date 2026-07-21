@@ -46,3 +46,7 @@ Não há suíte de testes configurada.
 ## Deploy
 
 Vercel, com Root Directory configurado como `site`.
+
+## Regra de commits
+
+Nunca rodar `git commit` ou `git push` neste repositório, mesmo que peçam para "salvar" ou "commitar" as mudanças — o usuário faz commits e push manualmente. Pode usar `git status`/`git diff`/`git log` livremente.
