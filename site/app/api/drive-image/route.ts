@@ -11,6 +11,12 @@ const ALLOWED_IDS = new Set([
   "19ISR32JWRHrT4u1u4P-Fhfyw71LEtoYQ", // camiseta do kit oficial 2026
   "1P0Z5S8son1FKHLjtUolab3v_rYfJGIEP", // troféu 2026
   "1D_YfWTZWyAdSzIEFK8Jps0u6OiJuvkoW", // medalha 2026
+  "17BHab8cPQFn7xGyEa_EbNdN_sb4fa_Xj", // museu cheetaras — foto 1
+  "1NbSpLvCx1CRXEqPJOxVuf8PoAPcAqwQK", // museu cheetaras — foto 2
+  "1Q8TUFSdoFD9DoLjHx0J8XMhXwY3VfDO7", // museu cheetaras — foto 3
+  "1OOVFUAxA6pi2C8jvOQwAhwPzUk7q4g7V", // museu cheetaras — foto 4
+  "1lTcDUy1ySWuWd9Kz5UrjAOtDuW2q1PJE", // museu cheetaras — foto 5
+  "1wTI0_0pCDxY_gFtib5Yg1Smt8N3BtX4y", // museu cheetaras — foto 6
 ]);
 
 const ALLOWED_WIDTHS = new Set(["800", "1200", "1920"]);
