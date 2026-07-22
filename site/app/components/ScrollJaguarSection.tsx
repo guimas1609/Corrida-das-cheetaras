@@ -44,20 +44,34 @@ export default function ScrollJaguarSection() {
         alt=""
         className="absolute inset-0 hidden h-full w-full object-cover sm:block"
       />
-      {/* Leve clareamento pra unificar a foto de fundo com o resto do visual */}
+      {/* Escurece o fundo (em vez de clarear) — o mark precisa ser o
+          elemento mais iluminado da tela, a foto fica mais de "cenário".
+          Vinheta radial reforça o centro, estilo hero premium. */}
       <div
         aria-hidden
-        className="absolute inset-0 bg-gradient-to-b from-white/10 via-white/40 to-white/60"
+        className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/25 to-black/45"
+      />
+      <div
+        aria-hidden
+        className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,rgba(0,0,0,0.35)_100%)]"
       />
 
       {/* Mark é a peça principal do hero, dentro de uma vitrine de vidro 3D
           de verdade (GlassCase, dentro de CheetaraHead3D.tsx) — em pé, gira
           sozinho e também pode ser arrastado, independente de scroll. */}
-      <div className="relative z-10 h-[38vh] w-full max-w-xs sm:h-[42vh] sm:max-w-md">
+      <div className="relative z-10 h-[30vh] w-full max-w-[15rem] sm:h-[34vh] sm:max-w-[22rem]">
+        {/* Halo roxo bem sutil atrás da vitrine, como se fosse uma luz do
+            próprio evento refletindo no vidro */}
+        <div
+          aria-hidden
+          className="absolute inset-0 flex items-center justify-center"
+        >
+          <div className="h-[80%] w-[80%] rounded-full bg-[radial-gradient(circle,rgba(96,32,136,0.35),transparent_70%)] blur-2xl" />
+        </div>
         {/* Sombra difusa sob a vitrine, pra "ancorar" ela na foto de fundo */}
         <div
           aria-hidden
-          className="absolute bottom-4 left-1/2 h-6 w-2/3 -translate-x-1/2 rounded-[50%] bg-black/25 blur-xl"
+          className="absolute bottom-4 left-1/2 h-6 w-2/3 -translate-x-1/2 rounded-[50%] bg-black/30 blur-xl"
         />
         <CheetaraHead3D />
       </div>
