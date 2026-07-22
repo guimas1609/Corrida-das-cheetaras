@@ -73,7 +73,10 @@ export default function ScrollJaguarSection() {
           aria-hidden
           className="absolute bottom-4 left-1/2 h-6 w-2/3 -translate-x-1/2 rounded-[50%] bg-black/30 blur-xl"
         />
-        <CheetaraHead3D />
+        <CheetaraHead3D
+          mobileBackground={BG_IMAGE_MOBILE}
+          desktopBackground={BG_IMAGE_DESKTOP}
+        />
       </div>
 
       <div className="relative z-10 flex w-full flex-col items-center gap-1 px-6 pt-2 pb-10 text-center">

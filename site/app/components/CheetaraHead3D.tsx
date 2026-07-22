@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   ContactShadows,
@@ -99,50 +99,98 @@ function AcrylicBase() {
         roughness={0.12}
         thickness={0.3}
         ior={1.45}
-        clearcoat={0.7}
-        clearcoatRoughness={0.08}
+        clearcoat={0.5}
+        clearcoatRoughness={0.1}
         color="#f5f0f6"
-        envMapIntensity={0.8}
+        envMapIntensity={0.3}
       />
     </mesh>
   );
 }
 
 /**
+ * A foto da corrida renderizada dentro da própria cena 3D, bem atrás de
+ * tudo. Sem isso, o `transmission` do vidro não tem o que refratar (ele
+ * refrata o que está atrás DENTRO da cena Three.js, não o <img> do DOM por
+ * trás do canvas) — e cai pra reflexo do HDRI, que é claro/branco. É esse
+ * bug que fazia a vitrine parecer um bloco branco sólido.
+ */
+function SceneBackdrop({ src }: { src: string }) {
+  // TextureLoader "cru" (não o useTexture do drei) de propósito: assim dá
+  // pra ajustar o colorSpace na própria construção do objeto, sem mutar
+  // depois um valor devolvido por hook (o linter do React barra isso). Não
+  // suspende — a textura só troca de blank pra imagem quando carrega, sem
+  // travar a cena.
+  const texture = useMemo(() => {
+    const t = new THREE.TextureLoader().load(src);
+    t.colorSpace = THREE.SRGBColorSpace;
+    return t;
+  }, [src]);
+  return (
+    <mesh position={[0, 0, -3]}>
+      <planeGeometry args={[12, 12]} />
+      <meshBasicMaterial map={texture} toneMapped={false} />
+    </mesh>
+  );
+}
+
+/**
  * Vitrine de vidro: uma caixa 3D real (não CSS) ao redor do mark. Vidro
- * quase invisível (transmission alto, roughness bem baixo — nada de
- * frost/embaçado, que é o que fazia parecer um bloco branco sólido antes),
- * com uma borda fininha (`Edges`, 1px real de linha) marcando o volume.
- * `transmission` nativo do meshPhysicalMaterial já refrata a foto de fundo
- * usando o HDRI da cena, sem precisar de reflector/geometria extra pesada
- * (ver histórico: pódio em 3D anterior ficou pesado).
+ * quase invisível (transmission bem alto, roughness bem baixo, pouco
+ * clearcoat/envMapIntensity) — sem branco sólido, sem glow preenchendo a
+ * superfície. Existe principalmente pela borda fina (`Edges`) e por
+ * highlights pequenos nos cantos, não por brilho espalhado.
  */
 function GlassCase() {
   return (
     <RoundedBox args={[2.4, 2.4, 1.1]} radius={0.24} smoothness={4}>
       <meshPhysicalMaterial
-        transmission={0.96}
-        roughness={0.045}
-        thickness={0.22}
-        ior={1.5}
-        clearcoat={0.5}
-        clearcoatRoughness={0.06}
+        transmission={0.97}
+        roughness={0.035}
+        thickness={0.35}
+        ior={1.45}
+        clearcoat={0.3}
+        clearcoatRoughness={0.1}
         color="#ffffff"
-        envMapIntensity={0.7}
+        envMapIntensity={0.35}
       />
-      {/* Borda fina e levemente iluminada (linewidth do WebGL já satura em
-          ~1px na maioria dos navegadores — exatamente o efeito pedido) */}
-      <Edges color="#ffffff" transparent opacity={0.35} />
+      {/* Borda fina e discreta (linewidth do WebGL já satura em ~1px na
+          maioria dos navegadores) — é por ela que o vidro "existe". */}
+      <Edges color="#ffffff" transparent opacity={0.45} />
     </RoundedBox>
   );
+}
+
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState(
+    () => typeof window !== "undefined" && window.matchMedia("(min-width: 640px)").matches
+  );
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 640px)");
+    const onChange = () => setIsDesktop(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+  return isDesktop;
 }
 
 /**
  * Sempre pode ser arrastada com o dedo/mouse — totalmente independente de
  * scroll ou de qualquer outro estado da página. Usado no hero (mobile e
- * desktop), sempre dentro da vitrine de vidro.
+ * desktop), sempre dentro da vitrine de vidro. `mobileBackground`/
+ * `desktopBackground`: a mesma foto que já aparece no DOM ao redor do
+ * canvas, carregada de novo como textura só pra refração ficar coerente
+ * com o que se vê fora da vitrine.
  */
-export default function CheetaraHead3D() {
+export default function CheetaraHead3D({
+  mobileBackground,
+  desktopBackground,
+}: {
+  mobileBackground: string;
+  desktopBackground: string;
+}) {
+  const isDesktop = useIsDesktop();
+
   return (
     <Canvas
       camera={{ position: [0, 0.15, 4.6], fov: 40 }}
@@ -152,33 +200,41 @@ export default function CheetaraHead3D() {
       {/* Iluminação de estúdio: key branca suave (esquerda), fill branca
           fraca do lado oposto (suaviza sombra), rim branca atrás (separa a
           silhueta do mark do fundo). Ambient baixo pra manter o mark como
-          elemento mais iluminado da cena. */}
-      <ambientLight intensity={0.3} />
+          elemento mais iluminado da cena — o vidro não é "iluminado", só
+          reflete. */}
+      <ambientLight intensity={0.25} />
       <directionalLight position={[-4, 2.5, 3]} intensity={1.2} color="#ffffff" />
-      <directionalLight position={[4, -1, 2]} intensity={0.22} color="#ffffff" />
+      <directionalLight position={[4, -1, 2]} intensity={0.2} color="#ffffff" />
       <directionalLight position={[0, 1.5, -5]} intensity={1.1} color="#ffffff" />
       {/* HDRI de estúdio pra reflexo natural nos materiais metálicos/vidro */}
       <Environment preset="studio" />
 
-      <GlassCase />
-      <AcrylicBase />
+      <SceneBackdrop src={isDesktop ? desktopBackground : mobileBackground} />
 
-      {/* Flutuação bem sutil (poucos px de amplitude) — a vitrine em volta
-          fica parada, só a peça dentro se move devagar. */}
-      <Float speed={1.2} rotationIntensity={0.015} floatIntensity={0.05}>
-        <CheetaraMark />
-      </Float>
+      {/* Leve giro estático (não anima) só pra mostrar a lateral e os
+          cantos lapidados da caixa — sem isso a câmera vê só a face frontal
+          lisa e a espessura do vidro nunca aparece. */}
+      <group rotation={[0.05, 0.26, 0]}>
+        <GlassCase />
+        <AcrylicBase />
 
-      {/* Sombra de contato na base, embaixo da peça — dá a noção de peso e
-          profundidade (aproximação leve de AO, sem post-processing). */}
-      <ContactShadows
-        position={[0, -0.72, 0]}
-        opacity={0.45}
-        scale={1.6}
-        blur={2}
-        far={1}
-        resolution={256}
-      />
+        {/* Flutuação bem sutil (poucos px de amplitude) — a vitrine em
+            volta fica parada, só a peça dentro se move devagar. */}
+        <Float speed={1.2} rotationIntensity={0.015} floatIntensity={0.05}>
+          <CheetaraMark />
+        </Float>
+
+        {/* Sombra de contato na base — dá noção de peso/profundidade
+            (aproximação leve de AO, sem post-processing). */}
+        <ContactShadows
+          position={[0, -0.72, 0]}
+          opacity={0.45}
+          scale={1.6}
+          blur={2}
+          far={1}
+          resolution={256}
+        />
+      </group>
 
       <OrbitControls
         enableZoom={false}
