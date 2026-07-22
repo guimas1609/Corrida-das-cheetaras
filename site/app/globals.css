@@ -78,3 +78,18 @@ body {
 .bg-gradient-cheetara {
   background: var(--gradient-cheetara);
 }
+
+/* Zoom lentíssimo (Ken Burns) na foto do hero — só percebido depois de
+   alguns segundos, nunca chamativo. */
+@keyframes hero-zoom {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.08);
+  }
+}
+
+.animate-hero-zoom {
+  animation: hero-zoom 24s ease-out forwards;
+}
