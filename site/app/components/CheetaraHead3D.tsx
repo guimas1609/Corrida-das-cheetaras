@@ -2,7 +2,7 @@
 
 import { useMemo, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Environment, OrbitControls, Float } from "@react-three/drei";
+import { Environment, OrbitControls, Float, RoundedBox } from "@react-three/drei";
 import * as THREE from "three";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader.js";
 import { MARK_PATH, MARK_VIEWBOX } from "./cheetaraMarkPath";
@@ -81,8 +81,33 @@ function CheetaraMark() {
 }
 
 /**
+ * Vitrine de vidro: uma caixa 3D real (não CSS) ao redor do mark, com
+ * material de transmissão (vidro/frost) — fica parada enquanto o mark gira
+ * dentro dela. `transmission` nativo do meshPhysicalMaterial usa o HDRI da
+ * cena pro reflexo/refração, bem mais leve que uma cena cheia de reflector
+ * + geometria extra (ver histórico: pódio em 3D anterior ficou pesado).
+ */
+function GlassCase() {
+  return (
+    <RoundedBox args={[3, 3, 1.4]} radius={0.3} smoothness={4}>
+      <meshPhysicalMaterial
+        transmission={0.9}
+        roughness={0.22}
+        thickness={0.8}
+        ior={1.4}
+        clearcoat={1}
+        clearcoatRoughness={0.12}
+        color="#ffffff"
+        envMapIntensity={1.2}
+      />
+    </RoundedBox>
+  );
+}
+
+/**
  * Sempre gira sozinha e sempre pode ser arrastada com o dedo/mouse —
  * totalmente independente de scroll ou de qualquer outro estado da página.
+ * Usado no hero (mobile e desktop), sempre dentro da vitrine de vidro.
  */
 export default function CheetaraHead3D() {
   return (
@@ -100,6 +125,8 @@ export default function CheetaraHead3D() {
       <directionalLight position={[0, 1.5, -5]} intensity={1.1} color="#ffffff" />
       {/* HDRI de estúdio pra reflexo natural nos materiais metálicos */}
       <Environment preset="studio" />
+
+      <GlassCase />
 
       <Float speed={1.5} rotationIntensity={0.06} floatIntensity={0.18}>
         <CheetaraMark />
