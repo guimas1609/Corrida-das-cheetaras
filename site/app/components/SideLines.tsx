@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { subscribeCursor } from "../lib/cursorTracker";
 
 // Linhas verticais decorativas nas laterais do hero (só desktop). Duas
 // camadas de movimento por linha:
 //  - camada externa: drift + pulso de opacidade idle, sempre rodando
 //    (animate-side-line, CSS) — nunca fica parada.
 //  - camada interna: balanço horizontal + "acende" quando o mouse se
-//    aproxima do lado correspondente (JS, via ref — sem re-render).
+//    aproxima do lado correspondente (via cursorTracker compartilhado,
+//    atualizações já agrupadas por frame).
 const SIDE_LINE_GRADIENT =
   "linear-gradient(to bottom, transparent, var(--color-cheetara-pink) 35%, var(--color-cheetara-purple) 65%, transparent)";
 
@@ -24,8 +26,8 @@ export default function SideLines() {
   const refs = useRef<(HTMLSpanElement | null)[]>([]);
 
   useEffect(() => {
-    const onMove = (e: PointerEvent) => {
-      const x = (e.clientX / window.innerWidth) * 2 - 1; // -1..1
+    return subscribeCursor((clientX) => {
+      const x = (clientX / window.innerWidth) * 2 - 1; // -1..1
       const proximityLeft = Math.max(0, -x);
       const proximityRight = Math.max(0, x);
 
@@ -36,10 +38,7 @@ export default function SideLines() {
         const sway = (line.side === "left" ? proximity : -proximity) * 8;
         el.style.transform = `translateX(${sway}px) scaleX(${1 + proximity * 1.6})`;
       });
-    };
-
-    window.addEventListener("pointermove", onMove);
-    return () => window.removeEventListener("pointermove", onMove);
+    });
   }, []);
 
   return (

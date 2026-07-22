@@ -1,33 +1,30 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { subscribeCursor } from "../lib/cursorTracker";
 
 /**
  * Logo do hero: no desktop, reage à posição do cursor na janela inteira
  * (não só ao passar exatamente por cima dela) — tilt 3D + leve
- * deslocamento, tipo vitrine de produto. Global em vez de hover-only pra
- * não depender de precisão de mouse pra disparar o efeito. Aplicado via
- * ref (não state) pra não re-renderizar a cada pointermove.
+ * deslocamento, tipo vitrine de produto. Usa o rastreador compartilhado
+ * (cursorTracker) em vez de um listener próprio, e as atualizações já vêm
+ * agrupadas por frame — não recalcula a cada pointermove cru.
  */
 export default function HeroLogo() {
   const ref = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    const onMove = (e: PointerEvent) => {
-      const x = (e.clientX / window.innerWidth) * 2 - 1; // -1..1
-      const y = (e.clientY / window.innerHeight) * 2 - 1;
+    return subscribeCursor((clientX, clientY) => {
+      const el = ref.current;
+      if (!el) return;
+      const x = (clientX / window.innerWidth) * 2 - 1; // -1..1
+      const y = (clientY / window.innerHeight) * 2 - 1;
       const rotateY = x * 18;
       const rotateX = -y * 18;
       const translateX = x * 16;
       const translateY = y * 16;
       el.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translate(${translateX}px, ${translateY}px)`;
-    };
-
-    window.addEventListener("pointermove", onMove);
-    return () => window.removeEventListener("pointermove", onMove);
+    });
   }, []);
 
   return (
