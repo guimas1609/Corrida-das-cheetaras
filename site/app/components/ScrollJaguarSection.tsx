@@ -76,7 +76,7 @@ export default function ScrollJaguarSection() {
         <Reveal delay={200}>
           <a
             href="#museu"
-            className="relative block overflow-hidden rounded-full bg-gradient-cheetara px-16 py-4 text-lg font-medium text-white shadow-sm transition hover:brightness-110 hover:shadow-md"
+            className="relative block overflow-hidden rounded-none bg-gradient-cheetara px-16 py-4 text-lg font-medium text-white shadow-sm transition hover:brightness-110 hover:shadow-md"
           >
             <span
               aria-hidden

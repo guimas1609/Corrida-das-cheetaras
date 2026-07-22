@@ -94,22 +94,19 @@ body {
   animation: hero-zoom 24s ease-out forwards;
 }
 
-/* Brilho passando pelo CTA — varre rápido e depois fica "escondido" fora
-   do botão pelo resto do ciclo, pra não virar um piscar contínuo. */
+/* Brilho passando pelo CTA — varre o botão inteiro, de ponta a ponta, num
+   único movimento contínuo (sem parar/segurar no meio) antes de repetir. */
 @keyframes button-shine {
   0% {
-    transform: translateX(-120%) skewX(-15deg);
-  }
-  20% {
-    transform: translateX(120%) skewX(-15deg);
+    transform: translateX(-160%) skewX(-15deg);
   }
   100% {
-    transform: translateX(120%) skewX(-15deg);
+    transform: translateX(160%) skewX(-15deg);
   }
 }
 
 .animate-button-shine {
-  animation: button-shine 3.2s ease-in-out infinite;
+  animation: button-shine 2.6s ease-in-out infinite;
 }
 
 /* Flutuação suave da logo no mobile — lá não tem cursor pra reagir ao

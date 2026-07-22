@@ -20,7 +20,7 @@ export default function FloatingCTA() {
     <a
       href="#museu"
       aria-label="Quero me inscrever"
-      className={`fixed bottom-6 right-6 z-40 rounded-full bg-gradient-cheetara px-6 py-3 font-medium text-white shadow-lg transition-all duration-300 hover:brightness-110 hover:shadow-xl sm:bottom-8 sm:right-8 ${
+      className={`fixed bottom-6 right-6 z-40 rounded-none bg-gradient-cheetara px-6 py-3 font-medium text-white shadow-lg transition-all duration-300 hover:brightness-110 hover:shadow-xl sm:bottom-8 sm:right-8 ${
         visible
           ? "translate-y-0 opacity-100"
           : "pointer-events-none translate-y-4 opacity-0"
