@@ -1,4 +1,5 @@
 import Reveal from "./Reveal";
+import RevealText from "./RevealText";
 
 // Distâncias oficiais da Corrida das Cheetaras. Faixas etárias ainda são
 // genéricas — substituir pelos números oficiais quando definidos.
@@ -20,15 +21,24 @@ export default function RouteSection() {
   return (
     <section id="percurso" className="mx-auto w-full max-w-5xl px-6 py-24 sm:py-32">
       <Reveal className="text-center">
-        <span className="text-sm font-semibold tracking-widest text-cheetara-pink uppercase">
+        <RevealText
+          as="span"
+          className="text-sm font-semibold tracking-widest text-cheetara-pink uppercase"
+        >
           Percurso
-        </span>
-        <h2 className="mt-3 text-5xl font-black tracking-tight text-foreground sm:text-6xl">
+        </RevealText>
+        <RevealText
+          as="h2"
+          className="mt-3 block text-5xl font-black tracking-tight text-foreground sm:text-6xl"
+        >
           Escolha sua distância
-        </h2>
-        <p className="mx-auto mt-5 max-w-md text-lg text-muted-foreground">
+        </RevealText>
+        <RevealText
+          as="p"
+          className="mx-auto mt-5 block max-w-md text-lg text-muted-foreground"
+        >
           Duas modalidades pra todo mundo participar.
-        </p>
+        </RevealText>
       </Reveal>
 
       <Reveal delay={120}>
@@ -39,10 +49,14 @@ export default function RouteSection() {
               className="flex flex-col items-center gap-1 rounded-3xl border border-black/5 bg-white/50 py-10 shadow-[0_8px_30px_rgba(96,32,136,0.1)] backdrop-blur-sm"
             >
               <span className="text-gradient-cheetara text-7xl font-black">
-                {d.km}
-                <span className="text-3xl align-top">km</span>
+                <RevealText as="span">{d.km}</RevealText>
+                <RevealText as="span" className="text-3xl align-top">
+                  km
+                </RevealText>
               </span>
-              <span className="text-base text-muted-foreground">{d.label}</span>
+              <RevealText as="span" className="block text-base text-muted-foreground">
+                {d.label}
+              </RevealText>
             </div>
           ))}
         </div>
@@ -50,17 +64,18 @@ export default function RouteSection() {
 
       <Reveal delay={220}>
         <div className="mt-16 text-center">
-          <h3 className="text-2xl font-bold text-foreground">
+          <RevealText as="h3" className="block text-2xl font-bold text-foreground">
             Faixas etárias
-          </h3>
+          </RevealText>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             {AGE_GROUPS.map((group) => (
-              <span
+              <RevealText
                 key={group}
+                as="span"
                 className="rounded-full border border-black/5 bg-white/60 px-5 py-2.5 text-base text-foreground backdrop-blur-sm"
               >
                 {group}
-              </span>
+              </RevealText>
             ))}
           </div>
         </div>

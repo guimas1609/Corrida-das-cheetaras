@@ -79,10 +79,13 @@ export default function ScrollJaguarSection() {
           <HeroLogo />
         </Reveal>
 
-        <Reveal delay={200}>
+        {/* Só no desktop — no mobile o CTA imediato some daqui e quem
+            assume é o FloatingCTA, que só aparece depois que a pessoa rola
+            a tela (ver FloatingCTA.tsx). */}
+        <Reveal delay={200} className="hidden sm:block">
           <a
             href="#museu"
-            className="relative block overflow-hidden rounded-none border border-white/40 bg-gradient-to-br from-cheetara-pink/20 to-cheetara-purple/20 px-16 py-4 text-lg font-medium text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.45),0_8px_30px_rgba(96,32,136,0.2)] backdrop-blur-xl transition hover:from-cheetara-pink/35 hover:to-cheetara-purple/35"
+            className="relative block overflow-hidden border border-white/40 bg-gradient-to-br from-cheetara-pink/90 to-cheetara-purple/90 px-10 py-3 text-base font-medium text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_8px_30px_rgba(96,32,136,0.4)] backdrop-blur-md transition [clip-path:polygon(16px_0,100%_0,100%_calc(100%-16px),calc(100%-16px)_100%,0_100%,0_16px)] hover:from-cheetara-pink hover:to-cheetara-purple"
           >
             {/* Sheen de vidro/gel — realce claro na metade de cima. */}
             <span

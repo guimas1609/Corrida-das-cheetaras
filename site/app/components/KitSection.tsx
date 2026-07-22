@@ -1,4 +1,5 @@
 import Reveal from "./Reveal";
+import RevealText from "./RevealText";
 
 const SHIRT_URL = "/api/drive-image?id=19ISR32JWRHrT4u1u4P-Fhfyw71LEtoYQ&w=1200";
 
@@ -18,16 +19,25 @@ export default function KitSection() {
       </Reveal>
 
       <Reveal delay={120} className="w-full md:w-1/2">
-        <span className="text-sm font-semibold tracking-widest text-cheetara-pink uppercase">
+        <RevealText
+          as="span"
+          className="text-sm font-semibold tracking-widest text-cheetara-pink uppercase"
+        >
           Kit oficial
-        </span>
-        <h2 className="mt-3 text-5xl font-black tracking-tight text-gradient-cheetara sm:text-6xl">
+        </RevealText>
+        <RevealText
+          as="h2"
+          className="mt-3 block text-5xl font-black tracking-tight text-gradient-cheetara sm:text-6xl"
+        >
           Kit Cheetaras 2026
-        </h2>
-        <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-          A camiseta oficial da VI Corrida das Cheetaras, sua companheira
-          do aquecimento até a linha de chegada.
-        </p>
+        </RevealText>
+        <RevealText
+          as="p"
+          className="mt-5 block text-lg leading-relaxed text-muted-foreground"
+        >
+          A camiseta oficial da VI Corrida das Cheetaras, sua companheira do
+          aquecimento até a linha de chegada.
+        </RevealText>
       </Reveal>
     </section>
   );

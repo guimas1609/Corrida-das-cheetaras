@@ -38,10 +38,10 @@ export default function CursorGlow({
     >
       <div
         ref={ref}
-        className="absolute top-0 left-0 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-70 blur-[70px] transition-transform duration-300 ease-out will-change-transform"
+        className="absolute top-0 left-0 h-[160px] w-[160px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-80 blur-[22px] transition-transform duration-300 ease-out will-change-transform"
         style={{
           background:
-            "radial-gradient(circle, rgba(240,32,144,0.55), rgba(96,32,136,0.4) 45%, transparent 72%)",
+            "radial-gradient(circle, rgba(240,32,144,0.6), rgba(96,32,136,0.35) 30%, transparent 60%)",
         }}
       />
     </div>

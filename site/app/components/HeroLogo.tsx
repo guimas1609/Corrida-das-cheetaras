@@ -21,7 +21,7 @@ export default function HeroLogo() {
     // innerWidth), como a logo fica no centro da tela, o cursor perto dela
     // sempre dava x,y ~0 e o tilt sumia exatamente onde deveria ser mais
     // forte.
-    const RADIUS = 260;
+    const RADIUS = 480;
 
     const onMove = (e: MouseEvent) => {
       const rect = el.getBoundingClientRect();
@@ -29,10 +29,10 @@ export default function HeroLogo() {
       const centerY = rect.top + rect.height / 2;
       const x = Math.max(-1, Math.min(1, (e.clientX - centerX) / RADIUS));
       const y = Math.max(-1, Math.min(1, (e.clientY - centerY) / RADIUS));
-      const rotateY = x * 24;
-      const rotateX = -y * 24;
-      const translateX = x * 18;
-      const translateY = y * 18;
+      const rotateY = x * 10;
+      const rotateX = -y * 10;
+      const translateX = x * 8;
+      const translateY = y * 8;
       el.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translate(${translateX}px, ${translateY}px)`;
     };
 
@@ -54,7 +54,7 @@ export default function HeroLogo() {
         ref={ref}
         src="/api/drive-image?id=11y8Ot9i6RQqv7q8OdAUxeptlTcNrA7Hi&w=800"
         alt="Corrida das Cheetaras"
-        className="h-56 w-auto cursor-pointer transition-transform duration-100 ease-out will-change-transform sm:h-80"
+        className="h-56 w-auto cursor-pointer transition-transform duration-500 ease-out will-change-transform sm:h-80"
       />
     </div>
   );

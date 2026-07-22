@@ -1,4 +1,5 @@
 import Reveal from "./Reveal";
+import RevealText from "./RevealText";
 
 const TROPHY_URL = "/api/drive-image?id=1P0Z5S8son1FKHLjtUolab3v_rYfJGIEP&w=1200";
 const MEDAL_URL = "/api/drive-image?id=1D_YfWTZWyAdSzIEFK8Jps0u6OiJuvkoW&w=1200";
@@ -11,12 +12,18 @@ export default function TrophyGallery() {
     >
       <div className="flex flex-col items-center gap-10">
         <Reveal>
-          <span className="text-sm font-semibold tracking-widest text-cheetara-pink uppercase">
+          <RevealText
+            as="span"
+            className="text-sm font-semibold tracking-widest text-cheetara-pink uppercase"
+          >
             Premiação
-          </span>
-          <h2 className="mt-3 text-6xl font-black tracking-tight text-gradient-cheetara sm:text-7xl">
+          </RevealText>
+          <RevealText
+            as="h2"
+            className="mt-3 block text-6xl font-black tracking-tight text-gradient-cheetara sm:text-7xl"
+          >
             TROFÉU 2026
-          </h2>
+          </RevealText>
         </Reveal>
         <Reveal delay={150} className="w-full">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -30,12 +37,18 @@ export default function TrophyGallery() {
 
       <div className="flex flex-col items-center gap-10">
         <Reveal>
-          <span className="text-sm font-semibold tracking-widest text-cheetara-pink uppercase">
+          <RevealText
+            as="span"
+            className="text-sm font-semibold tracking-widest text-cheetara-pink uppercase"
+          >
             Premiação
-          </span>
-          <h2 className="mt-3 text-6xl font-black tracking-tight text-gradient-cheetara sm:text-7xl">
+          </RevealText>
+          <RevealText
+            as="h2"
+            className="mt-3 block text-6xl font-black tracking-tight text-gradient-cheetara sm:text-7xl"
+          >
             MEDALHA 2026
-          </h2>
+          </RevealText>
         </Reveal>
         <Reveal delay={150} className="w-full">
           {/* eslint-disable-next-line @next/next/no-img-element */}

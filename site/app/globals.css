@@ -160,3 +160,13 @@ body {
 .animate-side-line {
   animation: side-line-drift 5s ease-in-out infinite;
 }
+
+/* Reduz movimento: textos letra-por-letra (RevealText.tsx) aparecem
+   direto, sem stagger nem transição. */
+@media (prefers-reduced-motion: reduce) {
+  .reveal-text-char {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
