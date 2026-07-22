@@ -127,3 +127,39 @@ body {
 .animate-logo-float {
   animation: logo-float 4s ease-in-out infinite;
 }
+
+/* Balanço idle da logo no desktop — roda sempre, por baixo do tilt que
+   reage ao mouse (aplicado no <img> por dentro deste wrapper via JS), pra
+   nunca ficar "parada" enquanto o cursor não se move. */
+@keyframes hero-logo-idle {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-hero-logo-idle {
+  animation: hero-logo-idle 5s ease-in-out infinite;
+}
+
+/* Deslocamento + pulso de opacidade idle das linhas laterais do hero —
+   roda sempre; o balanço horizontal + brilho extra por proximidade do
+   mouse (SideLines.tsx) fica na camada interna. */
+@keyframes side-line-drift {
+  0%,
+  100% {
+    transform: translateY(-16%);
+    opacity: 0.22;
+  }
+  50% {
+    transform: translateY(16%);
+    opacity: 0.55;
+  }
+}
+
+.animate-side-line {
+  animation: side-line-drift 5s ease-in-out infinite;
+}

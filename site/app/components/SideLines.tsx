@@ -2,19 +2,22 @@
 
 import { useEffect, useRef } from "react";
 
-// Linhas verticais decorativas nas laterais do hero (só desktop) — reagem
-// à posição do cursor: deslocam verticalmente (parallax) e acendem mais
-// quando o mouse se aproxima do lado correspondente.
+// Linhas verticais decorativas nas laterais do hero (só desktop). Duas
+// camadas de movimento por linha:
+//  - camada externa: drift + pulso de opacidade idle, sempre rodando
+//    (animate-side-line, CSS) — nunca fica parada.
+//  - camada interna: balanço horizontal + "acende" quando o mouse se
+//    aproxima do lado correspondente (JS, via ref — sem re-render).
 const SIDE_LINE_GRADIENT =
   "linear-gradient(to bottom, transparent, var(--color-cheetara-pink) 35%, var(--color-cheetara-purple) 65%, transparent)";
 
 const LINES = [
-  { side: "left" as const, offset: "5%", top: "12%", height: "35%", depth: 0.6 },
-  { side: "left" as const, offset: "11%", top: "52%", height: "30%", depth: 1.1 },
-  { side: "left" as const, offset: "18%", top: "28%", height: "40%", depth: 0.85 },
-  { side: "right" as const, offset: "5%", top: "18%", height: "32%", depth: 0.7 },
-  { side: "right" as const, offset: "11%", top: "50%", height: "38%", depth: 1 },
-  { side: "right" as const, offset: "18%", top: "10%", height: "28%", depth: 0.9 },
+  { side: "left" as const, offset: "5%", top: "12%", height: "35%", duration: "5s", delay: "0s" },
+  { side: "left" as const, offset: "11%", top: "52%", height: "30%", duration: "6.2s", delay: "0.8s" },
+  { side: "left" as const, offset: "18%", top: "28%", height: "40%", duration: "4.4s", delay: "1.6s" },
+  { side: "right" as const, offset: "5%", top: "18%", height: "32%", duration: "5.6s", delay: "0.4s" },
+  { side: "right" as const, offset: "11%", top: "50%", height: "38%", duration: "4.8s", delay: "1.2s" },
+  { side: "right" as const, offset: "18%", top: "10%", height: "28%", duration: "6.6s", delay: "2s" },
 ];
 
 export default function SideLines() {
@@ -23,7 +26,6 @@ export default function SideLines() {
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
       const x = (e.clientX / window.innerWidth) * 2 - 1; // -1..1
-      const y = (e.clientY / window.innerHeight) * 2 - 1;
       const proximityLeft = Math.max(0, -x);
       const proximityRight = Math.max(0, x);
 
@@ -31,8 +33,8 @@ export default function SideLines() {
         const el = refs.current[i];
         if (!el) return;
         const proximity = line.side === "left" ? proximityLeft : proximityRight;
-        el.style.transform = `translateY(${y * line.depth * 34}px)`;
-        el.style.opacity = String(0.16 + proximity * 0.55);
+        const sway = (line.side === "left" ? proximity : -proximity) * 8;
+        el.style.transform = `translateX(${sway}px) scaleX(${1 + proximity * 1.6})`;
       });
     };
 
@@ -47,17 +49,23 @@ export default function SideLines() {
           line.side !== "left" ? null : (
             <span
               key={`l-${i}`}
-              ref={(el) => {
-                refs.current[i] = el;
-              }}
-              className="absolute w-px"
+              className="animate-side-line absolute"
               style={{
                 left: line.offset,
                 top: line.top,
                 height: line.height,
-                background: SIDE_LINE_GRADIENT,
+                animationDuration: line.duration,
+                animationDelay: line.delay,
               }}
-            />
+            >
+              <span
+                ref={(el) => {
+                  refs.current[i] = el;
+                }}
+                className="block h-full w-px transition-transform duration-200 ease-out will-change-transform"
+                style={{ background: SIDE_LINE_GRADIENT }}
+              />
+            </span>
           )
         )}
       </div>
@@ -66,17 +74,23 @@ export default function SideLines() {
           line.side !== "right" ? null : (
             <span
               key={`r-${i}`}
-              ref={(el) => {
-                refs.current[i] = el;
-              }}
-              className="absolute w-px"
+              className="animate-side-line absolute"
               style={{
                 right: line.offset,
                 top: line.top,
                 height: line.height,
-                background: SIDE_LINE_GRADIENT,
+                animationDuration: line.duration,
+                animationDelay: line.delay,
               }}
-            />
+            >
+              <span
+                ref={(el) => {
+                  refs.current[i] = el;
+                }}
+                className="block h-full w-px transition-transform duration-200 ease-out will-change-transform"
+                style={{ background: SIDE_LINE_GRADIENT }}
+              />
+            </span>
           )
         )}
       </div>
