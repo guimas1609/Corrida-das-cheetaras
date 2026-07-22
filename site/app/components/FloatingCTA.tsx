@@ -20,13 +20,19 @@ export default function FloatingCTA() {
     <a
       href="#museu"
       aria-label="Quero me inscrever"
-      className={`fixed bottom-6 right-6 z-40 rounded-none bg-gradient-cheetara px-6 py-3 font-medium text-white shadow-lg transition-all duration-300 hover:brightness-110 hover:shadow-xl sm:bottom-8 sm:right-8 ${
+      className={`fixed bottom-6 right-6 z-40 overflow-hidden rounded-none border border-white/40 bg-gradient-to-br from-cheetara-pink/55 to-cheetara-purple/55 px-6 py-3 font-medium text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.45),0_8px_24px_rgba(96,32,136,0.25)] backdrop-blur-md transition-all duration-300 hover:from-cheetara-pink/70 hover:to-cheetara-purple/70 sm:bottom-8 sm:right-8 ${
         visible
           ? "translate-y-0 opacity-100"
           : "pointer-events-none translate-y-4 opacity-0"
       }`}
     >
-      Quero me inscrever
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/35 to-transparent"
+      />
+      <span className="relative drop-shadow-[0_1px_2px_rgba(0,0,0,0.25)]">
+        Quero me inscrever
+      </span>
     </a>
   );
 }
