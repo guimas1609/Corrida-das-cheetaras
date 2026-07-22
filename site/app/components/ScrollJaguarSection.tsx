@@ -75,9 +75,13 @@ export default function ScrollJaguarSection() {
         <Reveal delay={200}>
           <a
             href="#museu"
-            className="rounded-full bg-gradient-cheetara px-8 py-3.5 font-medium text-white shadow-sm transition hover:brightness-110 hover:shadow-md"
+            className="relative block overflow-hidden rounded-full bg-gradient-cheetara px-16 py-4 text-lg font-medium text-white shadow-sm transition hover:brightness-110 hover:shadow-md"
           >
-            Quero me inscrever
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-0 -translate-x-full animate-button-shine bg-[linear-gradient(115deg,transparent_35%,rgba(255,255,255,0.65)_50%,transparent_65%)]"
+            />
+            <span className="relative">Quero me inscrever</span>
           </a>
         </Reveal>
       </div>

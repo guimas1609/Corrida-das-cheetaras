@@ -35,7 +35,7 @@ export default function HeroLogo() {
       ref={ref}
       src="/api/drive-image?id=11y8Ot9i6RQqv7q8OdAUxeptlTcNrA7Hi&w=800"
       alt="Corrida das Cheetaras"
-      className="h-40 w-auto cursor-pointer transition-transform duration-300 ease-out will-change-transform sm:h-60"
+      className="h-56 w-auto cursor-pointer transition-transform duration-300 ease-out will-change-transform sm:h-80"
     />
   );
 }
