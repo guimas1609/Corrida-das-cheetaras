@@ -2,6 +2,7 @@
 
 import CheetaraHead3D from "./CheetaraHead3D";
 import BackgroundVideo from "./BackgroundVideo";
+import GlassCard from "./GlassCard";
 
 // Vídeo de fundo em loop, só no mobile (quadro vertical completo, sem
 // corte). Fonte original veio do Google Drive do organizador, mas é servido
@@ -12,11 +13,11 @@ import BackgroundVideo from "./BackgroundVideo";
 // assets-brutos/video/hero-loop-original.mp4.
 const BG_VIDEO_MOBILE = "/video/hero-loop-vertical.mp4";
 
-// No desktop (sm+) o fundo é a foto do pódio (organizador, via proxy do
-// Drive) em vez do vídeo. Fica dentro desta seção (h-screen), não no fundo
-// global — assim some assim que rola pra próxima seção e volta pro
-// holográfico (HolographicBackground.tsx).
-const BG_IMAGE_DESKTOP = "/api/drive-image?id=1FFcNCU6N1uHDt2N_rguDXh7cZLbTQf2G&w=1920";
+// No desktop (sm+) o fundo é uma foto real da corrida (organizador, via
+// proxy do Drive) em vez do vídeo. Fica dentro desta seção (h-screen), não
+// no fundo global — assim some assim que rola pra próxima seção e volta
+// pro holográfico (HolographicBackground.tsx).
+const BG_IMAGE_DESKTOP = "/api/drive-image?id=1iQJr1iNY857BgnCsJEaF7w48OVpIz-fG&w=1920";
 
 export default function ScrollJaguarSection() {
   return (
@@ -42,7 +43,7 @@ export default function ScrollJaguarSection() {
         className="absolute inset-0 h-full w-full object-cover opacity-25 sm:hidden"
         src={BG_VIDEO_MOBILE}
       />
-      {/* Foto do pódio no desktop, cobrindo só esta seção */}
+      {/* Foto da corrida no desktop, cobrindo só esta seção */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         aria-hidden
@@ -57,19 +58,21 @@ export default function ScrollJaguarSection() {
         className="absolute inset-0 bg-gradient-to-b from-white/10 via-white/40 to-white/60"
       />
 
-      {/* 3D independente de scroll: gira sozinha e também pode ser
-          arrastada com o dedo/mouse a qualquer momento */}
-      <div className="relative z-10 h-[11vh] w-full max-w-[110px] sm:h-[16vh] sm:max-w-[160px]">
+      {/* Mobile: mark pequeno isolado, sem vidro — igual a sempre. 3D
+          independente de scroll: gira sozinha e também pode ser arrastada
+          com o dedo/mouse a qualquer momento. */}
+      <div className="relative z-10 h-[11vh] w-full max-w-[110px] sm:hidden">
         <CheetaraHead3D />
       </div>
 
-      {/* Sombra de contato: elipse desfocada simulando a marca 3D pousada
-          em cima do degrau do 1º lugar na foto de fundo — sem ela o mark
-          parece flutuar solto. Só desktop. */}
-      <div
-        aria-hidden
-        className="relative z-0 hidden h-4 w-20 -mb-2 rounded-[50%] bg-black/35 blur-md sm:block"
-      />
+      {/* Desktop: mark é a peça principal do hero, dentro de uma caixa de
+          vidro (GlassCard) sobre a foto da corrida — a sombra difusa da
+          própria caixa já dá o efeito de "flutuar" sobre o fundo. */}
+      <div className="relative z-10 hidden w-full max-w-md sm:block">
+        <GlassCard className="flex h-[42vh] items-center justify-center">
+          <CheetaraHead3D />
+        </GlassCard>
+      </div>
 
       <div className="relative z-10 flex w-full flex-col items-center gap-1 px-6 pt-2 pb-10 text-center">
         {/* Lettering oficial, recortado em duas peças (assets tirados do

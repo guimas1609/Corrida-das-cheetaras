@@ -2,7 +2,7 @@
 
 import { useMemo, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Float } from "@react-three/drei";
+import { Environment, OrbitControls, Float } from "@react-three/drei";
 import * as THREE from "three";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader.js";
 import { MARK_PATH, MARK_VIEWBOX } from "./cheetaraMarkPath";
@@ -66,7 +66,15 @@ function CheetaraMark() {
   return (
     <group ref={group}>
       <mesh geometry={geometry}>
-        <meshStandardMaterial vertexColors roughness={0.4} metalness={0.1} />
+        {/* Reflexos um pouco mais fortes (metalness/envMapIntensity) pra
+            ficar mais "premium" com o HDRI de estúdio, sem estourar o
+            brilho (roughness ainda moderado). */}
+        <meshStandardMaterial
+          vertexColors
+          roughness={0.32}
+          metalness={0.25}
+          envMapIntensity={1.15}
+        />
       </mesh>
     </group>
   );
@@ -83,11 +91,15 @@ export default function CheetaraHead3D() {
       dpr={[1, 2]}
       gl={{ antialias: true, alpha: true }}
     >
-      <ambientLight intensity={1.1} />
-      <directionalLight position={[3, 4, 5]} intensity={1.5} />
-      <directionalLight position={[0, 0.2, 5]} intensity={0.6} />
-      <directionalLight position={[-4, -1, -3]} intensity={0.5} color="#602088" />
-      <directionalLight position={[0, -3, 2]} intensity={0.45} color="#f02090" />
+      {/* Iluminação de estúdio: key branca suave (canto superior esquerdo),
+          fill branca fraca do lado oposto (suaviza sombra), rim branca
+          atrás (separa a silhueta do fundo). */}
+      <ambientLight intensity={0.35} />
+      <directionalLight position={[-4, 5, 3]} intensity={1.4} color="#ffffff" />
+      <directionalLight position={[4, -1.5, 2]} intensity={0.3} color="#ffffff" />
+      <directionalLight position={[0, 1.5, -5]} intensity={1.1} color="#ffffff" />
+      {/* HDRI de estúdio pra reflexo natural nos materiais metálicos */}
+      <Environment preset="studio" />
 
       <Float speed={1.5} rotationIntensity={0.06} floatIntensity={0.18}>
         <CheetaraMark />
