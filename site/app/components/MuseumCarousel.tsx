@@ -29,10 +29,21 @@ const SIZES = {
 // Único listener de media query pra decidir tamanho E qual resolução de
 // foto pedir ao proxy do Drive — reage a mudanças (resize, rotação de
 // tela), não só lê uma vez no mount.
+//
+// Sempre começa em `false` (mobile), tanto no SSR quanto no primeiro
+// render do client — nunca lê `window.matchMedia` no initializer. Esse
+// componente é Client Component mas ainda é renderizado no servidor (não
+// tem `dynamic(..., { ssr: false })` nenhum na cadeia até page.tsx); se o
+// initializer desse `true` no servidor (onde `window` não existe) e o
+// celular calculasse `false` no primeiro render do client, era uma
+// incompatibilidade de hidratação — o HTML do servidor vem no tamanho
+// desktop, o client tenta hidratar como mobile, e o React precisa
+// reconciliar às pressas uma árvore inteira de `motion.div`/drag do
+// Framer no meio do processo. Isso é exatamente o tipo de bug que dá
+// sintomas erráticos (drag que não anima, layout que pisca) sem stack
+// trace nenhum. Corrige pro valor real só depois do mount, via efeito.
 function useIsDesktop() {
-  const [isDesktop, setIsDesktop] = useState(() =>
-    typeof window === "undefined" ? true : window.matchMedia(DESKTOP_QUERY).matches
-  );
+  const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
     const mql = window.matchMedia(DESKTOP_QUERY);
