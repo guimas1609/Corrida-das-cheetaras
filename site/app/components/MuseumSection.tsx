@@ -68,12 +68,12 @@ export default function MuseumSection() {
 
       <div className="flex flex-col items-center gap-6 sm:items-start">
         <Reveal>
-          <span className="text-xs font-semibold tracking-widest text-cheetara-pink uppercase">
+          <h2 className="text-4xl font-bold tracking-tight text-gradient-cheetara sm:text-6xl">
             Museu Cheetaras
-          </span>
-          <h2 className="mt-2 text-4xl font-bold tracking-tight text-gradient-cheetara sm:text-6xl">
-            Relembre as edições
           </h2>
+          <span className="mt-2 block text-xs font-semibold tracking-widest text-cheetara-pink uppercase">
+            Relembre as edições
+          </span>
         </Reveal>
 
         <div className="flex gap-2">
