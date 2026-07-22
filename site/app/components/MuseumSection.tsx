@@ -36,7 +36,7 @@ export default function MuseumSection() {
         <span className="text-xs font-semibold tracking-widest text-cheetara-pink uppercase">
           Museu Cheetaras
         </span>
-        <h2 className="mt-2 text-3xl font-bold tracking-tight text-gradient-cheetara sm:text-4xl">
+        <h2 className="mt-2 text-4xl font-bold tracking-tight text-gradient-cheetara sm:text-6xl">
           Relembre as edições
         </h2>
       </Reveal>
@@ -51,12 +51,15 @@ export default function MuseumSection() {
           ‹
         </button>
 
-        <div className="aspect-[3/4] w-full overflow-hidden rounded-3xl shadow-[0_8px_30px_rgba(96,32,136,0.15)] sm:aspect-[16/9]">
+        <div className="aspect-[3/4] w-full overflow-hidden rounded-3xl bg-black/5 shadow-[0_8px_30px_rgba(96,32,136,0.15)] sm:aspect-[16/9]">
+          {/* object-contain: mostra a foto inteira, sem cortar rosto/corpo
+              quando a proporção original não bate com o card (retrato no
+              mobile, bem mais largo no desktop). */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={PHOTOS[index]}
             alt={`Foto do Museu Cheetaras, edição ${index + 1}`}
-            className="h-full w-full object-cover"
+            className="h-full w-full object-contain"
           />
         </div>
 
