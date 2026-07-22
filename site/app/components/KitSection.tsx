@@ -4,7 +4,10 @@ const SHIRT_URL = "/api/drive-image?id=19ISR32JWRHrT4u1u4P-Fhfyw71LEtoYQ&w=1200"
 
 export default function KitSection() {
   return (
-    <section className="mx-auto flex w-full max-w-5xl flex-col items-center gap-10 px-6 py-24 sm:py-32 md:flex-row md:gap-16">
+    <section
+      id="kit"
+      className="mx-auto flex w-full max-w-5xl flex-col items-center gap-10 px-6 py-24 sm:py-32 md:flex-row md:gap-16"
+    >
       <Reveal className="w-full md:w-1/2">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img

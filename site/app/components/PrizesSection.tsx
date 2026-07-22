@@ -5,7 +5,10 @@ const MEDAL_URL = "/api/drive-image?id=1D_YfWTZWyAdSzIEFK8Jps0u6OiJuvkoW&w=1200"
 
 export default function TrophyGallery() {
   return (
-    <section className="mx-auto flex w-full max-w-3xl flex-col items-center gap-28 px-6 py-24 text-center sm:py-32">
+    <section
+      id="premiacao"
+      className="mx-auto flex w-full max-w-3xl flex-col items-center gap-28 px-6 py-24 text-center sm:py-32"
+    >
       <div className="flex flex-col items-center gap-10">
         <Reveal>
           <span className="text-sm font-semibold tracking-widest text-cheetara-pink uppercase">

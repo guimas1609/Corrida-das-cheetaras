@@ -111,3 +111,38 @@ body {
 .animate-button-shine {
   animation: button-shine 3.2s ease-in-out infinite;
 }
+
+/* Flutuação suave da logo no mobile — lá não tem cursor pra reagir ao
+   tilt (HeroLogo.tsx), então esse balanço leve substitui a interação. */
+@keyframes logo-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+.animate-logo-float {
+  animation: logo-float 4s ease-in-out infinite;
+}
+
+/* Linhas verticais nas laterais do hero (só desktop) — "respiram" com
+   leve deslocamento + opacidade, pra tirar o vazio do fundo branco sem
+   competir com logo/CTA no centro. */
+@keyframes side-line-drift {
+  0%,
+  100% {
+    transform: translateY(-10%);
+    opacity: 0.18;
+  }
+  50% {
+    transform: translateY(10%);
+    opacity: 0.5;
+  }
+}
+
+.animate-side-line {
+  animation: side-line-drift 7s ease-in-out infinite;
+}

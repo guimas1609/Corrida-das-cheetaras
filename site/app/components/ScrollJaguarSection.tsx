@@ -1,5 +1,6 @@
 import Reveal from "./Reveal";
 import HeroLogo from "./HeroLogo";
+import SiteMenu from "./SiteMenu";
 
 // Fundo do hero é sempre foto real da corrida (organizador, via proxy do
 // Drive) — uma versão pro mobile, outra pro desktop. Fica dentro desta
@@ -20,6 +21,16 @@ const FADE_TO_WHITE = {
   ].join(", "),
 };
 
+// Linhas verticais decorativas nas laterais (só desktop) — quebram o vazio
+// do fundo branco sem disputar atenção com logo/CTA no centro.
+const SIDE_LINE_GRADIENT =
+  "linear-gradient(to bottom, transparent, var(--color-cheetara-pink) 35%, var(--color-cheetara-purple) 65%, transparent)";
+const SIDE_LINES = [
+  { offset: "5%", top: "12%", height: "35%", delay: "0s", duration: "7s" },
+  { offset: "11%", top: "52%", height: "30%", delay: "1.4s", duration: "8.5s" },
+  { offset: "18%", top: "28%", height: "40%", delay: "2.6s", duration: "6.5s" },
+];
+
 export default function ScrollJaguarSection() {
   return (
     <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-background">
@@ -32,11 +43,7 @@ export default function ScrollJaguarSection() {
           alt="Corrida das Cheetaras"
           className="h-9 w-9"
         />
-        <button type="button" aria-label="Abrir menu" className="flex flex-col gap-1.5 p-1">
-          <span className="h-0.5 w-7 rounded-full bg-gradient-cheetara" />
-          <span className="h-0.5 w-7 rounded-full bg-gradient-cheetara" />
-          <span className="h-0.5 w-7 rounded-full bg-gradient-cheetara" />
-        </button>
+        <SiteMenu />
       </header>
 
       {/* Foto de fundo: alto brilho, baixa saturação, contraste moderado —
@@ -64,6 +71,40 @@ export default function ScrollJaguarSection() {
       {/* Dissolve a foto em branco nas bordas — a única "moldura" é o
           próprio fundo do site. */}
       <div aria-hidden className="absolute inset-0" style={FADE_TO_WHITE} />
+
+      {/* Linhas verticais animadas nas laterais — só desktop. */}
+      <div aria-hidden className="absolute inset-y-0 left-0 hidden w-1/4 sm:block">
+        {SIDE_LINES.map((line, i) => (
+          <span
+            key={`l-${i}`}
+            className="animate-side-line absolute w-px"
+            style={{
+              left: line.offset,
+              top: line.top,
+              height: line.height,
+              background: SIDE_LINE_GRADIENT,
+              animationDelay: line.delay,
+              animationDuration: line.duration,
+            }}
+          />
+        ))}
+      </div>
+      <div aria-hidden className="absolute inset-y-0 right-0 hidden w-1/4 sm:block">
+        {SIDE_LINES.map((line, i) => (
+          <span
+            key={`r-${i}`}
+            className="animate-side-line absolute w-px"
+            style={{
+              right: line.offset,
+              top: line.top,
+              height: line.height,
+              background: SIDE_LINE_GRADIENT,
+              animationDelay: line.delay,
+              animationDuration: line.duration,
+            }}
+          />
+        ))}
+      </div>
 
       {/* Conteúdo central: logo (já traz o nome por extenso) e CTA — muito
           espaço negativo, entrada em sequência (logo → botão) via Reveal. */}
