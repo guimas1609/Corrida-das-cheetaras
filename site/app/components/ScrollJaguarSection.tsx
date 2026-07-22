@@ -55,6 +55,14 @@ export default function ScrollJaguarSection() {
         <CheetaraHead3D />
       </div>
 
+      {/* Sombra de contato: elipse desfocada simulando a marca 3D pousada
+          em cima do bloco do 1º lugar — sem ela o mark parece flutuar
+          solto acima do pódio. Só desktop, mesma largura do bloco. */}
+      <div
+        aria-hidden
+        className="relative z-0 hidden h-4 w-20 -mb-2 rounded-[50%] bg-black/35 blur-md sm:block"
+      />
+
       {/* Pódio (1º/2º/3º lugar), só desktop — fica logo abaixo do 3D, que
           parece estar de pé sobre o bloco central (1º lugar). */}
       <HeroPodium />
