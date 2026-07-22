@@ -41,15 +41,20 @@ export default function HeroLogo() {
   }, []);
 
   return (
-    // Wrapper só balança sozinho no desktop (sm:) — no mobile o próprio
-    // <img> já flutua (animate-logo-float), sem envolver nada aqui.
-    <div className="sm:animate-hero-logo-idle">
+    // O float/idle fica só no wrapper — nunca no <img>. CSS animation vence
+    // inline style pra mesma propriedade (transform), então se a animação
+    // de flutuar ficasse no <img> ela apagava o tilt do JS sempre que o
+    // "sm:animate-none" não estivesse valendo (janela redimensionada,
+    // DevTools aberto encolhendo a viewport, zoom do navegador etc.) — o
+    // tilt calculava certo mas nunca aparecia. Com a animação isolada aqui,
+    // o transform do <img> é 100% controlado pelo JS, em qualquer largura.
+    <div className="animate-logo-float sm:animate-hero-logo-idle">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         ref={ref}
         src="/api/drive-image?id=11y8Ot9i6RQqv7q8OdAUxeptlTcNrA7Hi&w=800"
         alt="Corrida das Cheetaras"
-        className="h-56 w-auto animate-logo-float cursor-pointer transition-transform duration-100 ease-out will-change-transform sm:h-80 sm:animate-none"
+        className="h-56 w-auto cursor-pointer transition-transform duration-100 ease-out will-change-transform sm:h-80"
       />
     </div>
   );
