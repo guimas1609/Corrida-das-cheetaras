@@ -45,12 +45,12 @@ export default function ScrollJaguarSection() {
         alt=""
         className="absolute inset-0 hidden h-full w-full scale-105 object-cover blur-[2px] sm:block"
       />
-      {/* Escurece ~35% (a logo precisa ser o ponto focal) + vinheta radial
-          suave — centro um pouco mais claro, bordas mais escuras. */}
-      <div aria-hidden className="absolute inset-0 bg-black/35" />
+      {/* Vinheta forte: fundo só aparece como um feixe de luz no centro,
+          laterais quase totalmente escuras (a logo é o único ponto focal). */}
+      <div aria-hidden className="absolute inset-0 bg-black/55" />
       <div
         aria-hidden
-        className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(0,0,0,0.5)_100%)]"
+        className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_15%,rgba(0,0,0,0.75)_55%,rgba(0,0,0,0.97)_100%)]"
       />
 
       {/* Mark é a peça central do hero, "flutuando" sozinha — sem caixa,
@@ -59,26 +59,6 @@ export default function ScrollJaguarSection() {
           (CheetaraHead3D.tsx), não de camadas CSS por fora. */}
       <div className="relative z-10 h-[38vh] w-full max-w-[20rem] sm:h-[50vh] sm:max-w-[30rem]">
         <CheetaraHead3D />
-      </div>
-
-      <div className="relative z-10 flex w-full flex-col items-center gap-1 px-6 pt-2 pb-10 text-center">
-        {/* Lettering oficial, recortado em duas peças (assets tirados do
-            Drive, sem margem) pra "CHEETARAS" poder ficar maior que o
-            subtítulo, cada uma preenchendo a largura sem cortar nada. */}
-        <h1 className="flex w-full flex-col items-center gap-1">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/logo/cheetaras-lettering-top.png"
-            alt="Corrida das"
-            className="w-full max-w-[170px] drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] sm:max-w-[230px]"
-          />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/logo/cheetaras-lettering-bottom.png"
-            alt="Cheetaras"
-            className="w-full max-w-[230px] drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] sm:max-w-[300px]"
-          />
-        </h1>
       </div>
 
       {/* Indicador de scroll, só desktop — rola suavemente até o Museu
