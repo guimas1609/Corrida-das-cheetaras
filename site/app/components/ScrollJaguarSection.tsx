@@ -71,9 +71,9 @@ export default function ScrollJaguarSection() {
         <Reveal>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/logo/cheetaras-mark-512.png"
+            src="/api/drive-image?id=11y8Ot9i6RQqv7q8OdAUxeptlTcNrA7Hi&w=800"
             alt="Corrida das Cheetaras"
-            className="h-16 w-16 sm:h-20 sm:w-20"
+            className="h-20 w-auto cursor-pointer transition-transform duration-500 ease-out hover:-rotate-3 hover:scale-105 sm:h-24"
           />
         </Reveal>
 
@@ -92,7 +92,7 @@ export default function ScrollJaguarSection() {
         <Reveal delay={450}>
           <a
             href="#museu"
-            className="rounded-full bg-cheetara-purple px-8 py-3.5 font-medium text-white shadow-sm transition hover:brightness-110 hover:shadow-md"
+            className="rounded-full bg-gradient-cheetara px-8 py-3.5 font-medium text-white shadow-sm transition hover:brightness-110 hover:shadow-md"
           >
             Quero me inscrever
           </a>

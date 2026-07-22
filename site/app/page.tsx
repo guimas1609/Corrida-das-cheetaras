@@ -3,10 +3,12 @@ import MuseumSection from "./components/MuseumSection";
 import KitSection from "./components/KitSection";
 import PrizesSection from "./components/PrizesSection";
 import RouteSection from "./components/RouteSection";
+import FloatingCTA from "./components/FloatingCTA";
 
 export default function Home() {
   return (
     <div className="relative flex flex-1 flex-col">
+      <FloatingCTA />
       <ScrollJaguarSection />
 
       <div className="relative z-10 h-2 w-full bg-gradient-cheetara" />

@@ -19,6 +19,7 @@ const ALLOWED_IDS = new Set([
   "1wTI0_0pCDxY_gFtib5Yg1Smt8N3BtX4y", // museu cheetaras — foto 6
   "1iQJr1iNY857BgnCsJEaF7w48OVpIz-fG", // fundo do hero desktop, foto da corrida
   "1ZI1NzWXc09eyG-BhC6xhsMCPH9stvqUz", // fundo do hero mobile, foto da corrida
+  "11y8Ot9i6RQqv7q8OdAUxeptlTcNrA7Hi", // logo oficial (mark), usada no hero
 ]);
 
 const ALLOWED_WIDTHS = new Set(["800", "1200", "1920"]);
