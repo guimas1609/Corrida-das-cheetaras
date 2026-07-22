@@ -2,7 +2,6 @@
 
 import CheetaraHead3D from "./CheetaraHead3D";
 import BackgroundVideo from "./BackgroundVideo";
-import HeroPodium from "./HeroPodium";
 
 // Vídeo de fundo em loop, só no mobile (quadro vertical completo, sem
 // corte). Fonte original veio do Google Drive do organizador, mas é servido
@@ -11,10 +10,13 @@ import HeroPodium from "./HeroPodium";
 // em toda requisição — proxiar ao vivo (como as imagens) travaria ou
 // pioraria o carregamento. Original intacto fica em
 // assets-brutos/video/hero-loop-original.mp4.
-//
-// No desktop (sm+) não tem vídeo — vira o pódio (HeroPodium) por trás do
-// 3D, com o fundo holográfico global aparecendo.
 const BG_VIDEO_MOBILE = "/video/hero-loop-vertical.mp4";
+
+// No desktop (sm+) o fundo é a foto do pódio (organizador, via proxy do
+// Drive) em vez do vídeo. Fica dentro desta seção (h-screen), não no fundo
+// global — assim some assim que rola pra próxima seção e volta pro
+// holográfico (HolographicBackground.tsx).
+const BG_IMAGE_DESKTOP = "/api/drive-image?id=1FFcNCU6N1uHDt2N_rguDXh7cZLbTQf2G&w=1920";
 
 export default function ScrollJaguarSection() {
   return (
@@ -35,15 +37,21 @@ export default function ScrollJaguarSection() {
         </button>
       </header>
 
-      {/* Vídeo bem sutil por cima do fundo holográfico (não mais o fundo
-          principal) — só no mobile: quadro vertical completo, sem corte.
-          Desktop (sm+) fica só no fundo holográfico + pódio, sem vídeo. */}
+      {/* Vídeo sutil no mobile: quadro vertical completo, sem corte */}
       <BackgroundVideo
         className="absolute inset-0 h-full w-full object-cover opacity-25 sm:hidden"
         src={BG_VIDEO_MOBILE}
       />
-      {/* Leve clareamento pra unificar o vídeo apagado com o fundo
-          holográfico ao redor */}
+      {/* Foto do pódio no desktop, cobrindo só esta seção */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        aria-hidden
+        src={BG_IMAGE_DESKTOP}
+        alt=""
+        className="absolute inset-0 hidden h-full w-full object-cover sm:block"
+      />
+      {/* Leve clareamento pra unificar o fundo (vídeo mobile ou foto
+          desktop) com o resto do visual */}
       <div
         aria-hidden
         className="absolute inset-0 bg-gradient-to-b from-white/10 via-white/40 to-white/60"
@@ -56,16 +64,12 @@ export default function ScrollJaguarSection() {
       </div>
 
       {/* Sombra de contato: elipse desfocada simulando a marca 3D pousada
-          em cima do bloco do 1º lugar — sem ela o mark parece flutuar
-          solto acima do pódio. Só desktop, mesma largura do bloco. */}
+          em cima do degrau do 1º lugar na foto de fundo — sem ela o mark
+          parece flutuar solto. Só desktop. */}
       <div
         aria-hidden
         className="relative z-0 hidden h-4 w-20 -mb-2 rounded-[50%] bg-black/35 blur-md sm:block"
       />
-
-      {/* Pódio (1º/2º/3º lugar), só desktop — fica logo abaixo do 3D, que
-          parece estar de pé sobre o bloco central (1º lugar). */}
-      <HeroPodium />
 
       <div className="relative z-10 flex w-full flex-col items-center gap-1 px-6 pt-2 pb-10 text-center">
         {/* Lettering oficial, recortado em duas peças (assets tirados do
