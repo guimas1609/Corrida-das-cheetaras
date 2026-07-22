@@ -7,14 +7,15 @@ import * as THREE from "three";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader.js";
 import { MARK_PATH, MARK_VIEWBOX } from "./cheetaraMarkPath";
 
-const PINK = new THREE.Color("#f02090");
-const PURPLE = new THREE.Color("#602088");
+export const MARK_PINK = new THREE.Color("#f02090");
+export const MARK_PURPLE = new THREE.Color("#602088");
 
 /**
  * Extrusão 3D da silhueta oficial do mark (cabeça da cheetah), com o
  * gradiente rosa→roxo da marca aplicado por vértice ao longo do eixo X.
+ * Exportado pra ser reaproveitado em outras cenas (ex. HeroPodiumScene.tsx).
  */
-function useMarkGeometry() {
+export function useMarkGeometry() {
   return useMemo(() => {
     const svgText = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${MARK_VIEWBOX}"><path d="${MARK_PATH}" fill="black" fill-rule="evenodd"/></svg>`;
     const svgData = new SVGLoader().parse(svgText);
@@ -46,7 +47,7 @@ function useMarkGeometry() {
     const c = new THREE.Color();
     for (let i = 0; i < pos.count; i++) {
       const t = (pos.getX(i) - bbox.min.x) / (bbox.max.x - bbox.min.x);
-      c.lerpColors(PINK, PURPLE, t);
+      c.lerpColors(MARK_PINK, MARK_PURPLE, t);
       colors.push(c.r, c.g, c.b);
     }
     geo.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
@@ -55,7 +56,8 @@ function useMarkGeometry() {
   }, []);
 }
 
-function CheetaraMark() {
+/** Gira sozinha no próprio eixo Y, independente de qualquer câmera/OrbitControls por fora. */
+export function CheetaraMark() {
   const group = useRef<THREE.Group>(null);
   const geometry = useMarkGeometry();
 

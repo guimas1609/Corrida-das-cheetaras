@@ -2,6 +2,7 @@
 
 import CheetaraHead3D from "./CheetaraHead3D";
 import BackgroundVideo from "./BackgroundVideo";
+import HeroPodiumScene from "./HeroPodiumScene";
 
 // Vídeo de fundo em loop, só no mobile (quadro vertical completo, sem
 // corte). Fonte original veio do Google Drive do organizador, mas é servido
@@ -10,13 +11,33 @@ import BackgroundVideo from "./BackgroundVideo";
 // em toda requisição — proxiar ao vivo (como as imagens) travaria ou
 // pioraria o carregamento. Original intacto fica em
 // assets-brutos/video/hero-loop-original.mp4.
+//
+// No desktop (sm+) não tem vídeo nem foto de fundo — o pódio é 3D de
+// verdade (HeroPodiumScene.tsx), na mesma cena do mark.
 const BG_VIDEO_MOBILE = "/video/hero-loop-vertical.mp4";
 
-// No desktop (sm+) o fundo é a foto do pódio (organizador, via proxy do
-// Drive) em vez do vídeo. Fica dentro desta seção (h-screen), não no fundo
-// global — assim some assim que rola pra próxima seção e volta pro
-// holográfico (HolographicBackground.tsx).
-const BG_IMAGE_DESKTOP = "/api/drive-image?id=1FFcNCU6N1uHDt2N_rguDXh7cZLbTQf2G&w=1920";
+/** Lettering oficial, recortado em duas peças (assets tirados do Drive,
+    sem margem) pra "CHEETARAS" poder ficar maior que o subtítulo, cada uma
+    preenchendo a largura sem cortar nada. Reaproveitado no bloco mobile
+    (fluxo normal) e no overlay desktop (sobre a cena 3D). */
+function Lettering() {
+  return (
+    <h1 className="flex w-full flex-col items-center gap-1">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/logo/cheetaras-lettering-top.png"
+        alt="Corrida das"
+        className="w-full max-w-[170px] drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] sm:max-w-[230px]"
+      />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/logo/cheetaras-lettering-bottom.png"
+        alt="Cheetaras"
+        className="w-full max-w-[230px] drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] sm:max-w-[300px]"
+      />
+    </h1>
+  );
+}
 
 export default function ScrollJaguarSection() {
   return (
@@ -42,53 +63,31 @@ export default function ScrollJaguarSection() {
         className="absolute inset-0 h-full w-full object-cover opacity-25 sm:hidden"
         src={BG_VIDEO_MOBILE}
       />
-      {/* Foto do pódio no desktop, cobrindo só esta seção */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        aria-hidden
-        src={BG_IMAGE_DESKTOP}
-        alt=""
-        className="absolute inset-0 hidden h-full w-full object-cover sm:block"
-      />
-      {/* Leve clareamento pra unificar o fundo (vídeo mobile ou foto
-          desktop) com o resto do visual */}
+      {/* Leve clareamento pra unificar o vídeo apagado (mobile) com o
+          fundo holográfico ao redor. Desktop não usa: o piso do
+          HeroPodiumScene já cobre visualmente essa área. */}
       <div
         aria-hidden
-        className="absolute inset-0 bg-gradient-to-b from-white/10 via-white/40 to-white/60"
+        className="absolute inset-0 bg-gradient-to-b from-white/10 via-white/40 to-white/60 sm:hidden"
       />
 
-      {/* 3D independente de scroll: gira sozinha e também pode ser
-          arrastada com o dedo/mouse a qualquer momento */}
-      <div className="relative z-10 h-[11vh] w-full max-w-[110px] sm:h-[16vh] sm:max-w-[160px]">
+      {/* Mobile: mark pequeno isolado (sem pódio) + lettering abaixo, no
+          fluxo normal — igual ao comportamento de sempre. */}
+      <div className="relative z-10 h-[11vh] w-full max-w-[110px] sm:hidden">
         <CheetaraHead3D />
       </div>
+      <div className="relative z-10 flex w-full flex-col items-center gap-1 px-6 pt-2 pb-10 text-center sm:hidden">
+        <Lettering />
+      </div>
 
-      {/* Sombra de contato: elipse desfocada simulando a marca 3D pousada
-          em cima do degrau do 1º lugar na foto de fundo — sem ela o mark
-          parece flutuar solto. Só desktop. */}
-      <div
-        aria-hidden
-        className="relative z-0 hidden h-4 w-20 -mb-2 rounded-[50%] bg-black/35 blur-md sm:block"
-      />
-
-      <div className="relative z-10 flex w-full flex-col items-center gap-1 px-6 pt-2 pb-10 text-center">
-        {/* Lettering oficial, recortado em duas peças (assets tirados do
-            Drive, sem margem) pra "CHEETARAS" poder ficar maior que o
-            subtítulo, cada uma preenchendo a largura sem cortar nada. */}
-        <h1 className="flex w-full flex-col items-center gap-1">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/logo/cheetaras-lettering-top.png"
-            alt="Corrida das"
-            className="w-full max-w-[170px] drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] sm:max-w-[230px]"
-          />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/logo/cheetaras-lettering-bottom.png"
-            alt="Cheetaras"
-            className="w-full max-w-[230px] drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] sm:max-w-[300px]"
-          />
-        </h1>
+      {/* Desktop: pódio + mark na mesma cena 3D (HeroPodiumScene.tsx), com
+          o lettering sobreposto por cima, perto da base — igual a uma
+          legenda sobre a peça, sem depender de alinhar DOM com imagem. */}
+      <div className="relative z-10 hidden h-[70vh] w-full max-w-3xl sm:block">
+        <HeroPodiumScene />
+        <div className="pointer-events-none absolute inset-x-0 bottom-8 z-10 flex flex-col items-center gap-1 px-6 text-center">
+          <Lettering />
+        </div>
       </div>
 
       {/* Indicador de scroll, só desktop — rola suavemente até o Museu
