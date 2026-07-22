@@ -2,6 +2,7 @@ import Reveal from "./Reveal";
 import HeroLogo from "./HeroLogo";
 import SiteMenu from "./SiteMenu";
 import SideLines from "./SideLines";
+import CursorGlow from "./CursorGlow";
 
 // Fundo do hero é sempre foto real da corrida (organizador, via proxy do
 // Drive) — uma versão pro mobile, outra pro desktop. Fica dentro desta
@@ -63,6 +64,11 @@ export default function ScrollJaguarSection() {
           próprio fundo do site. */}
       <div aria-hidden className="absolute inset-0" style={FADE_TO_WHITE} />
 
+      {/* Faixa de luz local: o fundo opaco acima esconde a instância global
+          (ver layout.tsx), então o hero tem a sua própria, acima da foto e
+          abaixo do conteúdo (z-10). */}
+      <CursorGlow zIndexClassName="z-[5]" />
+
       {/* Linhas verticais nas laterais — só desktop, reagem ao mouse. */}
       <SideLines />
 
@@ -76,7 +82,7 @@ export default function ScrollJaguarSection() {
         <Reveal delay={200}>
           <a
             href="#museu"
-            className="relative block overflow-hidden rounded-none border border-white/40 bg-gradient-to-br from-cheetara-pink/55 to-cheetara-purple/55 px-16 py-4 text-lg font-medium text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.45),0_8px_30px_rgba(96,32,136,0.25)] backdrop-blur-md transition hover:from-cheetara-pink/70 hover:to-cheetara-purple/70"
+            className="relative block overflow-hidden rounded-none border border-white/40 bg-gradient-to-br from-cheetara-pink/20 to-cheetara-purple/20 px-16 py-4 text-lg font-medium text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.45),0_8px_30px_rgba(96,32,136,0.2)] backdrop-blur-xl transition hover:from-cheetara-pink/35 hover:to-cheetara-purple/35"
           >
             {/* Sheen de vidro/gel — realce claro na metade de cima. */}
             <span

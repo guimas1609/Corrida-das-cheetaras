@@ -11,8 +11,16 @@ import { subscribeCursor } from "../lib/cursorTracker";
  * sem função. Usa o rastreador compartilhado (cursorTracker) — mesmo
  * listener de pointermove que a logo e as linhas laterais, agrupado por
  * frame em vez de recalcular a cada evento cru.
+ *
+ * `zIndexClassName` existe porque o hero tem fundo opaco (foto) por cima
+ * da camada global -z-10 — o glow nunca aparecia lá. O hero renderiza uma
+ * segunda instância com z-index positivo, entre a foto e o conteúdo.
  */
-export default function CursorGlow() {
+export default function CursorGlow({
+  zIndexClassName = "-z-10",
+}: {
+  zIndexClassName?: string;
+}) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -26,7 +34,7 @@ export default function CursorGlow() {
   return (
     <div
       aria-hidden
-      className="pointer-events-none fixed inset-0 -z-10 hidden overflow-hidden sm:block"
+      className={`pointer-events-none fixed inset-0 hidden overflow-hidden sm:block ${zIndexClassName}`}
     >
       <div
         ref={ref}
