@@ -1,4 +1,5 @@
 import Reveal from "./Reveal";
+import HeroLogo from "./HeroLogo";
 
 // Fundo do hero é sempre foto real da corrida (organizador, via proxy do
 // Drive) — uma versão pro mobile, outra pro desktop. Fica dentro desta
@@ -64,32 +65,14 @@ export default function ScrollJaguarSection() {
           próprio fundo do site. */}
       <div aria-hidden className="absolute inset-0" style={FADE_TO_WHITE} />
 
-      {/* Conteúdo central: logo, nome, chamada e CTA — muito espaço
-          negativo, entrada em sequência (logo → título → subtítulo →
-          botão) via Reveal. */}
-      <div className="relative z-10 mx-auto flex max-w-2xl flex-col items-center gap-7 px-6 py-32 text-center sm:gap-8">
+      {/* Conteúdo central: logo (já traz o nome por extenso) e CTA — muito
+          espaço negativo, entrada em sequência (logo → botão) via Reveal. */}
+      <div className="relative z-10 mx-auto flex max-w-2xl flex-col items-center gap-10 px-6 py-32 text-center sm:gap-12">
         <Reveal>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/api/drive-image?id=11y8Ot9i6RQqv7q8OdAUxeptlTcNrA7Hi&w=800"
-            alt="Corrida das Cheetaras"
-            className="h-20 w-auto cursor-pointer transition-transform duration-500 ease-out hover:-rotate-3 hover:scale-105 sm:h-24"
-          />
+          <HeroLogo />
         </Reveal>
 
-        <Reveal delay={150}>
-          <h1 className="text-4xl font-bold tracking-tight text-gradient-cheetara sm:text-6xl">
-            V Corrida das Cheetaras
-          </h1>
-        </Reveal>
-
-        <Reveal delay={300}>
-          <p className="text-lg font-light tracking-wide text-muted-foreground sm:text-xl">
-            A maior corrida de rua de Bacabal.
-          </p>
-        </Reveal>
-
-        <Reveal delay={450}>
+        <Reveal delay={200}>
           <a
             href="#museu"
             className="rounded-full bg-gradient-cheetara px-8 py-3.5 font-medium text-white shadow-sm transition hover:brightness-110 hover:shadow-md"
