@@ -33,18 +33,11 @@ export default function MuseumSection() {
   return (
     <section
       id="museu"
-      className="mx-auto flex w-full max-w-md flex-col items-center gap-8 px-6 py-24 text-center sm:max-w-3xl sm:py-32"
+      className="mx-auto flex w-full max-w-md flex-col items-center gap-8 px-6 py-24 text-center sm:max-w-5xl sm:flex-row sm:items-center sm:justify-between sm:gap-16 sm:py-32 sm:text-left"
     >
-      <Reveal>
-        <span className="text-xs font-semibold tracking-widest text-cheetara-pink uppercase">
-          Museu Cheetaras
-        </span>
-        <h2 className="mt-2 text-4xl font-bold tracking-tight text-gradient-cheetara sm:text-6xl">
-          Relembre as edições
-        </h2>
-      </Reveal>
-
-      <Reveal delay={120} className="relative flex w-full max-w-xs items-center justify-center sm:max-w-2xl">
+      {/* Foto continua em pé (retrato) no desktop também — só muda de
+          centralizada pra "num canto", com o título no canto oposto. */}
+      <Reveal delay={120} className="relative flex w-full max-w-xs shrink-0 items-center justify-center sm:w-80">
         <button
           type="button"
           aria-label="Foto anterior"
@@ -54,15 +47,12 @@ export default function MuseumSection() {
           ‹
         </button>
 
-        <div className="aspect-[3/4] w-full overflow-hidden rounded-3xl bg-black/5 shadow-[0_8px_30px_rgba(96,32,136,0.15)] sm:aspect-[16/9]">
-          {/* object-contain: mostra a foto inteira, sem cortar rosto/corpo
-              quando a proporção original não bate com o card (retrato no
-              mobile, bem mais largo no desktop). */}
+        <div className="aspect-[3/4] w-full overflow-hidden rounded-3xl shadow-[0_8px_30px_rgba(96,32,136,0.15)]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={PHOTOS[index]}
             alt={`Foto do Museu Cheetaras, edição ${index + 1}`}
-            className="h-full w-full object-contain"
+            className="h-full w-full object-cover"
           />
         </div>
 
@@ -76,18 +66,29 @@ export default function MuseumSection() {
         </button>
       </Reveal>
 
-      <div className="flex gap-2">
-        {PHOTOS.map((photo, i) => (
-          <button
-            key={photo}
-            type="button"
-            aria-label={`Ir para foto ${i + 1}`}
-            onClick={() => go(i)}
-            className={`h-2 w-2 rounded-full transition-colors ${
-              i === index ? "bg-gradient-cheetara" : "bg-black/15"
-            }`}
-          />
-        ))}
+      <div className="flex flex-col items-center gap-6 sm:items-start">
+        <Reveal>
+          <span className="text-xs font-semibold tracking-widest text-cheetara-pink uppercase">
+            Museu Cheetaras
+          </span>
+          <h2 className="mt-2 text-4xl font-bold tracking-tight text-gradient-cheetara sm:text-6xl">
+            Relembre as edições
+          </h2>
+        </Reveal>
+
+        <div className="flex gap-2">
+          {PHOTOS.map((photo, i) => (
+            <button
+              key={photo}
+              type="button"
+              aria-label={`Ir para foto ${i + 1}`}
+              onClick={() => go(i)}
+              className={`h-2 w-2 rounded-full transition-colors ${
+                i === index ? "bg-gradient-cheetara" : "bg-black/15"
+              }`}
+            />
+          ))}
+        </div>
       </div>
     </section>
   );
