@@ -4,7 +4,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   animate,
   motion,
-  useDragControls,
   useMotionValue,
   useReducedMotion,
   useTransform,
@@ -18,7 +17,6 @@ const WHEEL_IDLE_MS = 120; // silêncio do wheel antes de assentar no slide mais
 const SETTLE_DURATION = 0.72; // segundos — mesma família de duration-700 usada em Reveal/RevealText
 const SETTLE_EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 const DESKTOP_QUERY = "(min-width: 640px)";
-const GESTURE_DECISION_PX = 6; // quanto o dedo precisa mover antes de decidir se é arraste (x) ou scroll (y)
 
 // Slide e espaçamento entre centros mudam de tamanho conforme a tela —
 // mobile precisa de um "deck" bem mais compacto que o desktop (senão as
@@ -130,7 +128,7 @@ function Slide({
         whileHover={isCenter ? { scale: 1.03 } : undefined}
         className={`block h-full w-full overflow-hidden rounded-3xl transition-shadow duration-300 ${
           isCenter
-            ? "cursor-grab shadow-[0_25px_60px_rgba(96,32,136,0.3)] active:cursor-grabbing"
+            ? "cursor-grab shadow-[0_10px_24px_rgba(96,32,136,0.18)] active:cursor-grabbing"
             : "cursor-pointer"
         }`}
       >
@@ -168,41 +166,6 @@ export default function MuseumCarousel({
   const dragStartVP = useRef(0);
   const reducedMotion = useReducedMotion() ?? false;
   const total = photos.length;
-
-  // Direction lock manual: com `drag="x"` puro, o Framer decide capturar o
-  // gesto como arraste horizontal nos primeiros pixels de toque, mesmo que
-  // o usuário só queira rolar a página verticalmente — daí a rolagem
-  // "grudava" no carrossel. Aqui a gente espera o dedo mover uns pixels
-  // antes de decidir: se for majoritariamente horizontal, entrega pro
-  // Framer (`dragControls.start`); se for vertical, não faz nada e deixa o
-  // scroll nativo da página seguir livre.
-  const dragControls = useDragControls();
-  const gestureStart = useRef<{ x: number; y: number } | null>(null);
-  const gestureDecided = useRef(false);
-
-  const onTrackPointerDown = useCallback((e: React.PointerEvent) => {
-    gestureStart.current = { x: e.clientX, y: e.clientY };
-    gestureDecided.current = false;
-  }, []);
-
-  const onTrackPointerMove = useCallback(
-    (e: React.PointerEvent) => {
-      if (gestureDecided.current || !gestureStart.current) return;
-      const dx = e.clientX - gestureStart.current.x;
-      const dy = e.clientY - gestureStart.current.y;
-      if (Math.abs(dx) < GESTURE_DECISION_PX && Math.abs(dy) < GESTURE_DECISION_PX) return;
-      gestureDecided.current = true;
-      if (Math.abs(dx) > Math.abs(dy)) {
-        dragControls.start(e);
-      }
-    },
-    [dragControls]
-  );
-
-  const resetGesture = useCallback(() => {
-    gestureStart.current = null;
-    gestureDecided.current = false;
-  }, []);
 
   // "Deforma" a foto na borda enquanto arrasta: quanto mais rápido o gesto
   // (arraste ou snap do settle), mais as fotos inclinam, tipo elástico —
@@ -297,8 +260,6 @@ export default function MuseumCarousel({
         <motion.div
           ref={trackRef}
           drag="x"
-          dragListener={false}
-          dragControls={dragControls}
           dragElastic={0}
           dragMomentum={false}
           // Sem isso o Framer também move a própria track (transform próprio
@@ -308,10 +269,6 @@ export default function MuseumCarousel({
           // aproveitar o gesto (onDrag/onDragEnd continuam disparando
           // normalmente), sem deixar a track em si se mexer.
           dragConstraints={{ left: 0, right: 0 }}
-          onPointerDown={onTrackPointerDown}
-          onPointerMove={onTrackPointerMove}
-          onPointerUp={resetGesture}
-          onPointerCancel={resetGesture}
           onDragStart={() => {
             setIsInteracting(true);
             dragStartVP.current = virtualPosition.get();
@@ -323,15 +280,11 @@ export default function MuseumCarousel({
             const projected = virtualPosition.get() - info.velocity.x / slideGap / 8;
             settle(Math.round(projected));
             setIsInteracting(false);
-            resetGesture();
           }}
-          // touch-action: pan-y explícito — com dragListener={false} o
-          // Framer não seta mais isso sozinho (só faz quando ele mesmo
-          // escuta o pointerdown). Sem essa declaração o navegador podia
-          // tentar rolar E arrastar ao mesmo tempo assim que a gente
-          // chamasse dragControls.start().
-          style={{ touchAction: "pan-y" }}
-          className={`relative w-full cursor-grab active:cursor-grabbing ${trackHeightClass}`}
+          // `drag="x"` já faz o Framer setar touch-action: pan-y sozinho
+          // (deixa a rolagem vertical nativa livre, só intercepta o gesto
+          // horizontal) — a classe abaixo só reforça isso.
+          className={`relative w-full cursor-grab touch-pan-y active:cursor-grabbing ${trackHeightClass}`}
         >
           {photos.map((photo, i) => (
             <Slide

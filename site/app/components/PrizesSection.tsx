@@ -42,7 +42,7 @@ export default function TrophyGallery() {
               src={TROPHY_URL}
               alt="Troféu oficial da Corrida das Cheetaras 2026"
               draggable={false}
-              className="w-full select-none drop-shadow-[0_25px_50px_rgba(96,32,136,0.25)]"
+              className="w-full select-none drop-shadow-[0_12px_20px_rgba(96,32,136,0.12)]"
             />
           </ProximityTilt>
         </Reveal>
