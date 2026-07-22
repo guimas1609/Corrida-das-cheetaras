@@ -31,7 +31,10 @@ export default function MuseumSection() {
   }, [index]);
 
   return (
-    <section className="mx-auto flex w-full max-w-md flex-col items-center gap-8 px-6 py-24 text-center sm:max-w-3xl sm:py-32">
+    <section
+      id="museu"
+      className="mx-auto flex w-full max-w-md flex-col items-center gap-8 px-6 py-24 text-center sm:max-w-3xl sm:py-32"
+    >
       <Reveal>
         <span className="text-xs font-semibold tracking-widest text-cheetara-pink uppercase">
           Museu Cheetaras

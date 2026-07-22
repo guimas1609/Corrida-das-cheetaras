@@ -2,20 +2,19 @@
 
 import CheetaraHead3D from "./CheetaraHead3D";
 import BackgroundVideo from "./BackgroundVideo";
+import HeroPodium from "./HeroPodium";
 
-// Vídeo de fundo em loop. Fonte original veio do Google Drive do organizador,
-// mas é servido a partir daqui (public/video/), não em proxy ao vivo: vídeo
-// depende de Range requests para tocar/dar seek, e o Drive não garante
-// suporte a isso em toda requisição — proxiar ao vivo (como as imagens)
-// travaria ou pioraria o carregamento. Original intacto fica em
+// Vídeo de fundo em loop, só no mobile (quadro vertical completo, sem
+// corte). Fonte original veio do Google Drive do organizador, mas é servido
+// a partir daqui (public/video/), não em proxy ao vivo: vídeo depende de
+// Range requests para tocar/dar seek, e o Drive não garante suporte a isso
+// em toda requisição — proxiar ao vivo (como as imagens) travaria ou
+// pioraria o carregamento. Original intacto fica em
 // assets-brutos/video/hero-loop-original.mp4.
 //
-// No mobile o vídeo é o quadro vertical completo, sem corte. No desktop
-// (sm+) usa a versão recortada só com a arena/banner (sem a pessoa em
-// primeiro plano), porque o quadro completo em tela larga jogaria o rosto
-// dela direto atrás do 3D/texto.
+// No desktop (sm+) não tem vídeo — vira o pódio (HeroPodium) por trás do
+// 3D, com o fundo holográfico global aparecendo.
 const BG_VIDEO_MOBILE = "/video/hero-loop-vertical.mp4";
-const BG_VIDEO_DESKTOP = "/video/hero-loop.mp4";
 
 export default function ScrollJaguarSection() {
   return (
@@ -37,15 +36,11 @@ export default function ScrollJaguarSection() {
       </header>
 
       {/* Vídeo bem sutil por cima do fundo holográfico (não mais o fundo
-          principal) — mobile: quadro vertical completo, sem corte */}
+          principal) — só no mobile: quadro vertical completo, sem corte.
+          Desktop (sm+) fica só no fundo holográfico + pódio, sem vídeo. */}
       <BackgroundVideo
         className="absolute inset-0 h-full w-full object-cover opacity-25 sm:hidden"
         src={BG_VIDEO_MOBILE}
-      />
-      {/* Desktop (sm+): recorte só com a arena/banner */}
-      <BackgroundVideo
-        className="absolute inset-0 hidden h-full w-full object-cover opacity-20 sm:block"
-        src={BG_VIDEO_DESKTOP}
       />
       {/* Leve clareamento pra unificar o vídeo apagado com o fundo
           holográfico ao redor */}
@@ -59,6 +54,10 @@ export default function ScrollJaguarSection() {
       <div className="relative z-10 h-[11vh] w-full max-w-[110px] sm:h-[16vh] sm:max-w-[160px]">
         <CheetaraHead3D />
       </div>
+
+      {/* Pódio (1º/2º/3º lugar), só desktop — fica logo abaixo do 3D, que
+          parece estar de pé sobre o bloco central (1º lugar). */}
+      <HeroPodium />
 
       <div className="relative z-10 flex w-full flex-col items-center gap-1 px-6 pt-2 pb-10 text-center">
         {/* Lettering oficial, recortado em duas peças (assets tirados do
@@ -79,6 +78,16 @@ export default function ScrollJaguarSection() {
           />
         </h1>
       </div>
+
+      {/* Indicador de scroll, só desktop — rola suavemente até o Museu
+          Cheetaras (próxima seção). */}
+      <a
+        href="#museu"
+        aria-label="Rolar para a próxima seção"
+        className="absolute bottom-6 z-10 hidden animate-bounce text-3xl text-gradient-cheetara sm:block"
+      >
+        ⌄
+      </a>
     </section>
   );
 }
