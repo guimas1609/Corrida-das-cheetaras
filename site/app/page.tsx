@@ -14,8 +14,14 @@ export default function Home() {
       <div className="relative z-10 h-2 w-full bg-gradient-cheetara" />
 
       <MuseumSection />
+      <div aria-hidden className="mx-auto h-px w-full max-w-xs bg-gradient-cheetara opacity-30" />
+
       <KitSection />
+      <div aria-hidden className="mx-auto h-px w-full max-w-xs bg-gradient-cheetara opacity-30" />
+
       <PrizesSection />
+      <div aria-hidden className="mx-auto h-px w-full max-w-xs bg-gradient-cheetara opacity-30" />
+
       <RouteSection />
 
       <footer className="flex flex-col items-center gap-3 px-6 py-16 text-center">
