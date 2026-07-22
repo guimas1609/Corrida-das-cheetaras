@@ -15,7 +15,7 @@ export default function RevealText({
   as: Tag = "span",
   className,
   delay = 0,
-  stagger = 25,
+  stagger = 40,
 }: {
   children: string;
   as?: ElementType;
@@ -63,8 +63,15 @@ export default function RevealText({
               return (
                 <span
                   key={charIndex}
-                  className={`reveal-text-char transition-[opacity,filter] duration-[850ms] ease-in-out ${
-                    visible ? "opacity-100 blur-none" : "opacity-0 blur-[3px]"
+                  className={`reveal-text-char transition-[opacity,filter] duration-[1100ms] ease-out ${
+                    // blur em `em` (não px): um valor fixo em px é
+                    // imperceptível num título gigante (96px) e exagerado
+                    // num label pequeno (14px) — a "PREMIAÇÃO" só parecia
+                    // ter uma animação melhor que os títulos por causa
+                    // disso. Em `em`, o desfoque escala com o tamanho da
+                    // fonte de cada elemento, dando o mesmo efeito
+                    // proporcional em qualquer título.
+                    visible ? "opacity-100 blur-none" : "opacity-0 blur-[0.3em]"
                   }`}
                   style={{ transitionDelay: `${thisDelay}ms` }}
                 >
