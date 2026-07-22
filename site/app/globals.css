@@ -142,6 +142,32 @@ body {
   animation: hero-logo-idle 5s ease-in-out infinite;
 }
 
+/* Flutuação idle bem lenta no mobile pros elementos com ProximityTilt.tsx
+   — lá não tem cursor pra se aproximar e disparar o tilt, então esse
+   balanço (flutua + um leve "shake" de rotação) substitui a interação
+   parada. Fica no wrapper externo, nunca no elemento que o JS do tilt
+   controla (mesmo cuidado do HeroLogo: duas camadas de transform, uma
+   CSS e uma inline, pra não brigarem pela mesma propriedade). */
+@keyframes tilt-idle-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-8px) rotate(-1.2deg);
+  }
+  50% {
+    transform: translateY(0) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-5px) rotate(1.2deg);
+  }
+}
+
+.animate-tilt-idle {
+  animation: tilt-idle-float 8s ease-in-out infinite;
+}
+
 /* Deslocamento + pulso de opacidade idle das linhas laterais do hero —
    roda sempre; o balanço horizontal + brilho extra por proximidade do
    mouse (SideLines.tsx) fica na camada interna. */

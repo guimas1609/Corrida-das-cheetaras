@@ -15,7 +15,7 @@ export default function RevealText({
   as: Tag = "span",
   className,
   delay = 0,
-  stagger = 40,
+  stagger = 55,
 }: {
   children: string;
   as?: ElementType;
@@ -29,9 +29,13 @@ export default function RevealText({
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    // threshold 0 + rootMargin negativo só na borda de baixo: dispara assim
+    // que a primeira letra entra na tela, sem esperar o bloco inteiro ficar
+    // 5%+ visível (era a causa do "demora pra começar" — títulos grandes
+    // levavam um bom scroll até bater o threshold antigo).
     const observer = new IntersectionObserver(
       ([entry]) => setVisible(entry.isIntersecting),
-      { threshold: 0.05 }
+      { threshold: 0, rootMargin: "0px 0px -8% 0px" }
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -50,9 +54,11 @@ export default function RevealText({
         ancestral parava de "enxergar" as letras e o título sumia inteiro,
         mesmo com opacity:1. `inline` mantém as letras no mesmo fluxo de
         texto do elemento pai, então o clip do gradiente continua
-        funcionando. Como transform não tem efeito em elementos inline, a
-        animação usa opacity + blur (filter funciona normalmente em inline)
-        em vez do translate-y que tínhamos antes.
+        funcionando. Animação só com `opacity` (sem `filter: blur`): blur
+        animado em dezenas de spans inline ao mesmo tempo, sobre um texto
+        com background-clip:text, forçava recomposição pesada a cada frame e
+        aparecia como um tremor/flicker nas letras — opacity sozinho é
+        praticamente grátis pro navegador.
       */}
       <span aria-hidden="true">
         {words.map((word, wi) => (
@@ -63,15 +69,8 @@ export default function RevealText({
               return (
                 <span
                   key={charIndex}
-                  className={`reveal-text-char transition-[opacity,filter] duration-[1100ms] ease-out ${
-                    // blur em `em` (não px): um valor fixo em px é
-                    // imperceptível num título gigante (96px) e exagerado
-                    // num label pequeno (14px) — a "PREMIAÇÃO" só parecia
-                    // ter uma animação melhor que os títulos por causa
-                    // disso. Em `em`, o desfoque escala com o tamanho da
-                    // fonte de cada elemento, dando o mesmo efeito
-                    // proporcional em qualquer título.
-                    visible ? "opacity-100 blur-none" : "opacity-0 blur-[0.3em]"
+                  className={`reveal-text-char transition-opacity duration-500 ease-out ${
+                    visible ? "opacity-100" : "opacity-0"
                   }`}
                   style={{ transitionDelay: `${thisDelay}ms` }}
                 >

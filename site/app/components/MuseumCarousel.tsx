@@ -4,20 +4,48 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   animate,
   motion,
+  useDragControls,
   useMotionValue,
   useReducedMotion,
   useTransform,
   useVelocity,
 } from "framer-motion";
-import Reveal from "./Reveal";
 import RevealText from "./RevealText";
 
 const AUTOPLAY_MS = 4000;
-const SLIDE_GAP = 340; // px entre os centros de dois slides vizinhos
 const WHEEL_SENSITIVITY = 300; // px de wheel-delta pra cobrir 1 slide inteiro
 const WHEEL_IDLE_MS = 120; // silêncio do wheel antes de assentar no slide mais próximo
 const SETTLE_DURATION = 0.72; // segundos — mesma família de duration-700 usada em Reveal/RevealText
 const SETTLE_EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
+const DESKTOP_QUERY = "(min-width: 640px)";
+const GESTURE_DECISION_PX = 6; // quanto o dedo precisa mover antes de decidir se é arraste (x) ou scroll (y)
+
+// Slide e espaçamento entre centros mudam de tamanho conforme a tela —
+// mobile precisa de um "deck" bem mais compacto que o desktop (senão as
+// fotos vizinhas nem cabem espiando na lateral).
+const SIZES = {
+  mobile: { slideGap: 210, slideWidthClass: "w-64", trackHeightClass: "h-[22rem]" },
+  desktop: { slideGap: 340, slideWidthClass: "w-[22rem]", trackHeightClass: "h-[40rem]" },
+};
+
+// Único listener de media query pra decidir tamanho E qual resolução de
+// foto pedir ao proxy do Drive — reage a mudanças (resize, rotação de
+// tela), não só lê uma vez no mount.
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState(() =>
+    typeof window === "undefined" ? true : window.matchMedia(DESKTOP_QUERY).matches
+  );
+
+  useEffect(() => {
+    const mql = window.matchMedia(DESKTOP_QUERY);
+    const onChange = () => setIsDesktop(mql.matches);
+    onChange();
+    mql.addEventListener("change", onChange);
+    return () => mql.removeEventListener("change", onChange);
+  }, []);
+
+  return isDesktop;
+}
 
 // Distância circular de `slideIndex` até a posição virtual `vp`, dando a
 // volta pelo array (ex: com 6 fotos, a foto 0 fica a +1 de distância da
@@ -34,6 +62,8 @@ function Slide({
   skewX,
   photo,
   total,
+  slideGap,
+  slideWidthClass,
   reducedMotion,
   onClick,
 }: {
@@ -42,13 +72,15 @@ function Slide({
   skewX: ReturnType<typeof useTransform<number, number>>;
   photo: string;
   total: number;
+  slideGap: number;
+  slideWidthClass: string;
   reducedMotion: boolean;
   onClick: () => void;
 }) {
   const offset = useTransform(virtualPosition, (vp) =>
     circularOffset(slideIndex, vp, total)
   );
-  const x = useTransform(offset, (o) => o * SLIDE_GAP);
+  const x = useTransform(offset, (o) => o * slideGap);
   const scale = useTransform(
     offset,
     [-1, 0, 1],
@@ -64,6 +96,11 @@ function Slide({
     reducedMotion ? [0, 1, 1, 1, 0] : [0, 0.45, 1, 0.45, 0],
     { clamp: true }
   );
+  // Sem isso a ordem de empilhamento seguia a ordem do array (DOM), não a
+  // distância até o centro — uma foto vizinha podia pintar por cima da
+  // foto central (e escondia a sombra dela, que sobrava "solta" por
+  // baixo). Quanto mais perto do centro, maior o z-index.
+  const zIndex = useTransform(offset, (o) => Math.round(10 - Math.abs(o) * 5));
   // Foto central "acorda" um pouco no hover — camada separada da que já
   // controla escala pela posição virtual, senão as duas fontes de scale
   // brigariam entre si.
@@ -82,8 +119,8 @@ function Slide({
 
   return (
     <motion.div
-      className="absolute top-1/2 left-1/2 aspect-[3/4] w-[22rem] -translate-x-1/2 -translate-y-1/2"
-      style={{ x, y, scale, skewX, opacity, willChange: "transform, opacity" }}
+      className={`absolute top-1/2 left-1/2 aspect-[3/4] -translate-x-1/2 -translate-y-1/2 ${slideWidthClass}`}
+      style={{ x, y, scale, skewX, opacity, zIndex, willChange: "transform, opacity" }}
     >
       <motion.button
         type="button"
@@ -110,7 +147,19 @@ function Slide({
   );
 }
 
-export default function MuseumCarouselDesktop({ photos }: { photos: string[] }) {
+export default function MuseumCarousel({
+  photosMobile,
+  photosDesktop,
+}: {
+  photosMobile: string[];
+  photosDesktop: string[];
+}) {
+  const isDesktop = useIsDesktop();
+  const photos = isDesktop ? photosDesktop : photosMobile;
+  const { slideGap, slideWidthClass, trackHeightClass } = isDesktop
+    ? SIZES.desktop
+    : SIZES.mobile;
+
   const virtualPosition = useMotionValue(0);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isInteracting, setIsInteracting] = useState(false);
@@ -119,6 +168,41 @@ export default function MuseumCarouselDesktop({ photos }: { photos: string[] }) 
   const dragStartVP = useRef(0);
   const reducedMotion = useReducedMotion() ?? false;
   const total = photos.length;
+
+  // Direction lock manual: com `drag="x"` puro, o Framer decide capturar o
+  // gesto como arraste horizontal nos primeiros pixels de toque, mesmo que
+  // o usuário só queira rolar a página verticalmente — daí a rolagem
+  // "grudava" no carrossel. Aqui a gente espera o dedo mover uns pixels
+  // antes de decidir: se for majoritariamente horizontal, entrega pro
+  // Framer (`dragControls.start`); se for vertical, não faz nada e deixa o
+  // scroll nativo da página seguir livre.
+  const dragControls = useDragControls();
+  const gestureStart = useRef<{ x: number; y: number } | null>(null);
+  const gestureDecided = useRef(false);
+
+  const onTrackPointerDown = useCallback((e: React.PointerEvent) => {
+    gestureStart.current = { x: e.clientX, y: e.clientY };
+    gestureDecided.current = false;
+  }, []);
+
+  const onTrackPointerMove = useCallback(
+    (e: React.PointerEvent) => {
+      if (gestureDecided.current || !gestureStart.current) return;
+      const dx = e.clientX - gestureStart.current.x;
+      const dy = e.clientY - gestureStart.current.y;
+      if (Math.abs(dx) < GESTURE_DECISION_PX && Math.abs(dy) < GESTURE_DECISION_PX) return;
+      gestureDecided.current = true;
+      if (Math.abs(dx) > Math.abs(dy)) {
+        dragControls.start(e);
+      }
+    },
+    [dragControls]
+  );
+
+  const resetGesture = useCallback(() => {
+    gestureStart.current = null;
+    gestureDecided.current = false;
+  }, []);
 
   // "Deforma" a foto na borda enquanto arrasta: quanto mais rápido o gesto
   // (arraste ou snap do settle), mais as fotos inclinam, tipo elástico —
@@ -149,13 +233,11 @@ export default function MuseumCarouselDesktop({ photos }: { photos: string[] }) 
     [settle, virtualPosition]
   );
 
-  // Autoplay — só roda em telas desktop (mesmo sem o bloco estar visível, o
-  // React continua montando os dois carrosséis; sem esse gate o timer do
-  // desktop ficaria "tiquetaqueando" à toa em telas mobile). Reregistra a
-  // cada `settle`, igual ao padrão já usado no carrossel mobile.
+  // Autoplay — roda em qualquer tamanho de tela (mobile e desktop têm o
+  // mesmo carrossel agora, então não há mais um segundo timer duplicado
+  // pra evitar).
   useEffect(() => {
     if (isInteracting) return;
-    if (!window.matchMedia("(min-width: 640px)").matches) return;
     const id = setInterval(() => {
       settle(Math.round(virtualPosition.get()) + 1);
     }, AUTOPLAY_MS);
@@ -167,7 +249,7 @@ export default function MuseumCarouselDesktop({ photos }: { photos: string[] }) 
   // horizontal (trackpad/shift+scroll). Um wheel vertical comum (rolar a
   // página) tem que passar direto: interceptar delta vertical aqui
   // travava a rolagem da página inteira sempre que o mouse estivesse em
-  // cima da galeria.
+  // cima da galeria. Em touch isso simplesmente não dispara.
   useEffect(() => {
     const el = trackRef.current;
     if (!el) return;
@@ -191,10 +273,10 @@ export default function MuseumCarouselDesktop({ photos }: { photos: string[] }) 
 
   return (
     <div className="flex flex-col items-center gap-4">
-      <Reveal className="text-center">
+      <div className="text-center">
         <RevealText
           as="h2"
-          className="block text-6xl font-bold tracking-tight text-gradient-cheetara sm:text-7xl"
+          className="block text-4xl font-bold tracking-tight text-gradient-cheetara sm:text-6xl md:text-7xl"
         >
           Museu Cheetaras
         </RevealText>
@@ -204,7 +286,7 @@ export default function MuseumCarouselDesktop({ photos }: { photos: string[] }) 
         >
           Relembre as edições
         </RevealText>
-      </Reveal>
+      </div>
 
       {/* overflow só no eixo X (não `overflow-hidden` cru): esse container
           tem quase a mesma altura da foto central, e cortar nos dois eixos
@@ -215,6 +297,8 @@ export default function MuseumCarouselDesktop({ photos }: { photos: string[] }) 
         <motion.div
           ref={trackRef}
           drag="x"
+          dragListener={false}
+          dragControls={dragControls}
           dragElastic={0}
           dragMomentum={false}
           // Sem isso o Framer também move a própria track (transform próprio
@@ -224,20 +308,30 @@ export default function MuseumCarouselDesktop({ photos }: { photos: string[] }) 
           // aproveitar o gesto (onDrag/onDragEnd continuam disparando
           // normalmente), sem deixar a track em si se mexer.
           dragConstraints={{ left: 0, right: 0 }}
+          onPointerDown={onTrackPointerDown}
+          onPointerMove={onTrackPointerMove}
+          onPointerUp={resetGesture}
+          onPointerCancel={resetGesture}
           onDragStart={() => {
             setIsInteracting(true);
             dragStartVP.current = virtualPosition.get();
           }}
           onDrag={(_, info) => {
-            virtualPosition.set(dragStartVP.current - info.offset.x / SLIDE_GAP);
+            virtualPosition.set(dragStartVP.current - info.offset.x / slideGap);
           }}
           onDragEnd={(_, info) => {
-            const projected =
-              virtualPosition.get() - info.velocity.x / SLIDE_GAP / 8;
+            const projected = virtualPosition.get() - info.velocity.x / slideGap / 8;
             settle(Math.round(projected));
             setIsInteracting(false);
+            resetGesture();
           }}
-          className="relative h-[40rem] w-full cursor-grab touch-pan-y active:cursor-grabbing"
+          // touch-action: pan-y explícito — com dragListener={false} o
+          // Framer não seta mais isso sozinho (só faz quando ele mesmo
+          // escuta o pointerdown). Sem essa declaração o navegador podia
+          // tentar rolar E arrastar ao mesmo tempo assim que a gente
+          // chamasse dragControls.start().
+          style={{ touchAction: "pan-y" }}
+          className={`relative w-full cursor-grab active:cursor-grabbing ${trackHeightClass}`}
         >
           {photos.map((photo, i) => (
             <Slide
@@ -247,6 +341,8 @@ export default function MuseumCarouselDesktop({ photos }: { photos: string[] }) 
               skewX={skewX}
               photo={photo}
               total={total}
+              slideGap={slideGap}
+              slideWidthClass={slideWidthClass}
               reducedMotion={reducedMotion}
               onClick={() => go(i - currentIndex)}
             />
@@ -257,7 +353,7 @@ export default function MuseumCarouselDesktop({ photos }: { photos: string[] }) 
           type="button"
           aria-label="Foto anterior"
           onClick={() => go(-1)}
-          className="absolute left-8 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-lg text-foreground shadow-[0_4px_16px_rgba(96,32,136,0.2)] backdrop-blur-sm transition hover:bg-white"
+          className="absolute left-1 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-lg text-foreground shadow-[0_4px_16px_rgba(96,32,136,0.2)] backdrop-blur-sm transition hover:bg-white sm:left-8 sm:h-11 sm:w-11"
         >
           ‹
         </button>
@@ -265,7 +361,7 @@ export default function MuseumCarouselDesktop({ photos }: { photos: string[] }) 
           type="button"
           aria-label="Próxima foto"
           onClick={() => go(1)}
-          className="absolute right-8 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-lg text-foreground shadow-[0_4px_16px_rgba(96,32,136,0.2)] backdrop-blur-sm transition hover:bg-white"
+          className="absolute right-1 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-lg text-foreground shadow-[0_4px_16px_rgba(96,32,136,0.2)] backdrop-blur-sm transition hover:bg-white sm:right-8 sm:h-11 sm:w-11"
         >
           ›
         </button>

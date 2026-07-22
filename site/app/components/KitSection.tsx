@@ -1,3 +1,4 @@
+import ProximityTilt from "./ProximityTilt";
 import Reveal from "./Reveal";
 import RevealText from "./RevealText";
 
@@ -10,15 +11,18 @@ export default function KitSection() {
       className="mx-auto flex w-full max-w-5xl flex-col items-center gap-10 px-6 py-24 sm:py-32 md:flex-row md:gap-16"
     >
       <Reveal className="w-full md:w-1/2">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={SHIRT_URL}
-          alt="Camiseta oficial da Corrida das Cheetaras 2026"
-          className="aspect-[4/5] w-full rounded-3xl object-cover shadow-[0_8px_30px_rgba(96,32,136,0.15)]"
-        />
+        <ProximityTilt className="w-full">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={SHIRT_URL}
+            alt="Camiseta oficial da Corrida das Cheetaras 2026"
+            draggable={false}
+            className="aspect-[4/5] w-full select-none rounded-3xl object-cover shadow-[0_8px_30px_rgba(96,32,136,0.15)]"
+          />
+        </ProximityTilt>
       </Reveal>
 
-      <Reveal delay={120} className="w-full md:w-1/2">
+      <div className="w-full md:w-1/2">
         <RevealText
           as="span"
           className="text-sm font-semibold tracking-widest text-cheetara-pink uppercase"
@@ -38,7 +42,7 @@ export default function KitSection() {
           A camiseta oficial da VI Corrida das Cheetaras, sua companheira do
           aquecimento até a linha de chegada.
         </RevealText>
-      </Reveal>
+      </div>
     </section>
   );
 }
