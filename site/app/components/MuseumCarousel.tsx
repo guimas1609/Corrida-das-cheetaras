@@ -73,7 +73,6 @@ function Slide({
   total,
   slideGap,
   slideWidthClass,
-  reducedMotion,
   onClick,
 }: {
   slideIndex: number;
@@ -83,28 +82,25 @@ function Slide({
   total: number;
   slideGap: number;
   slideWidthClass: string;
-  reducedMotion: boolean;
   onClick: () => void;
 }) {
   const offset = useTransform(virtualPosition, (vp) =>
     circularOffset(slideIndex, vp, total)
   );
   const x = useTransform(offset, (o) => o * slideGap);
-  const scale = useTransform(
-    offset,
-    [-1, 0, 1],
-    reducedMotion ? [1, 1, 1] : [0.82, 1, 0.82],
-    { clamp: true }
-  );
-  const y = useTransform(offset, [-1, 0, 1], reducedMotion ? [0, 0, 0] : [14, 0, 14], {
+  // Escala/deslocamento/opacidade das fotos vizinhas NÃO seguem
+  // `reducedMotion` — são pistas visuais estáticas de profundidade (o que
+  // diferencia a foto central das vizinhas), não animação em si. A troca
+  // de posição em si já respeita "reduzir movimento" via SETTLE_DURATION
+  // (vira 0, snap instantâneo) e o skewX (vira 0). Colapsar esses valores
+  // também fazia as 3 fotos ficarem do mesmo tamanho e 100% opacas ao
+  // mesmo tempo — sem diferenciação nenhuma, layout parecia quebrado em
+  // vez de só "sem animação".
+  const scale = useTransform(offset, [-1, 0, 1], [0.82, 1, 0.82], { clamp: true });
+  const y = useTransform(offset, [-1, 0, 1], [14, 0, 14], { clamp: true });
+  const opacity = useTransform(offset, [-1.5, -1, 0, 1, 1.5], [0, 0.45, 1, 0.45, 0], {
     clamp: true,
   });
-  const opacity = useTransform(
-    offset,
-    [-1.5, -1, 0, 1, 1.5],
-    reducedMotion ? [0, 1, 1, 1, 0] : [0, 0.45, 1, 0.45, 0],
-    { clamp: true }
-  );
   // Sem isso a ordem de empilhamento seguia a ordem do array (DOM), não a
   // distância até o centro — uma foto vizinha podia pintar por cima da
   // foto central (e escondia a sombra dela, que sobrava "solta" por
@@ -137,6 +133,21 @@ function Slide({
         aria-hidden={!isCenter}
         tabIndex={isCenter ? 0 : -1}
         whileHover={isCenter ? { scale: 1.03 } : undefined}
+        // Degradê de opacidade nas laterais só nas fotos vizinhas — a
+        // central fica intacta (é o conteúdo principal). Sem isso, as
+        // vizinhas — cortadas pelo overflow-x-hidden do container —
+        // terminavam num corte reto quadrado. Com o mask, dissolvem nas
+        // bordas em vez de cortar seco.
+        style={
+          isCenter
+            ? undefined
+            : {
+                maskImage:
+                  "linear-gradient(to right, transparent 0%, black 30%, black 70%, transparent 100%)",
+                WebkitMaskImage:
+                  "linear-gradient(to right, transparent 0%, black 30%, black 70%, transparent 100%)",
+              }
+        }
         className={`block h-full w-full overflow-hidden rounded-3xl transition-shadow duration-300 ${
           isCenter
             ? "cursor-grab shadow-[0_10px_24px_rgba(96,32,136,0.18)] active:cursor-grabbing"
@@ -307,7 +318,6 @@ export default function MuseumCarousel({
               total={total}
               slideGap={slideGap}
               slideWidthClass={slideWidthClass}
-              reducedMotion={reducedMotion}
               onClick={() => go(i - currentIndex)}
             />
           ))}
