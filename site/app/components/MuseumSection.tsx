@@ -37,7 +37,7 @@ export default function MuseumSection() {
     >
       {/* Foto continua em pé (retrato) no desktop também — só muda de
           centralizada pra "num canto", com o título no canto oposto. */}
-      <Reveal delay={120} className="relative flex w-full max-w-xs shrink-0 items-center justify-center sm:w-80">
+      <Reveal delay={120} className="relative flex w-full max-w-xs shrink-0 items-center justify-center sm:w-[26rem] lg:w-[30rem]">
         <button
           type="button"
           aria-label="Foto anterior"
