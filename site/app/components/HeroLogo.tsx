@@ -16,9 +16,19 @@ export default function HeroLogo() {
     const el = ref.current;
     if (!el) return;
 
+    // Raio (em px) em que o tilt atinge o máximo — baseado na posição da
+    // própria logo, não da janela inteira. Do jeito antigo (clientX /
+    // innerWidth), como a logo fica no centro da tela, o cursor perto dela
+    // sempre dava x,y ~0 e o tilt sumia exatamente onde deveria ser mais
+    // forte.
+    const RADIUS = 260;
+
     const onMove = (e: MouseEvent) => {
-      const x = (e.clientX / window.innerWidth) * 2 - 1; // -1..1
-      const y = (e.clientY / window.innerHeight) * 2 - 1;
+      const rect = el.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const x = Math.max(-1, Math.min(1, (e.clientX - centerX) / RADIUS));
+      const y = Math.max(-1, Math.min(1, (e.clientY - centerY) / RADIUS));
       const rotateY = x * 24;
       const rotateX = -y * 24;
       const translateX = x * 18;
