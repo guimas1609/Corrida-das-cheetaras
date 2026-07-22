@@ -33,7 +33,7 @@ export default function MuseumSection() {
   return (
     <section
       id="museu"
-      className="mx-auto flex w-full max-w-md flex-col items-center gap-8 px-6 py-24 text-center sm:max-w-5xl sm:flex-row sm:items-center sm:justify-between sm:gap-16 sm:py-32 sm:text-left"
+      className="mx-auto flex w-full max-w-md flex-col items-center gap-8 px-6 py-24 text-center sm:max-w-5xl sm:flex-row sm:items-center sm:justify-center sm:gap-10 sm:py-32 sm:text-left"
     >
       {/* Foto continua em pé (retrato) no desktop também — só muda de
           centralizada pra "num canto", com o título no canto oposto. */}
@@ -68,22 +68,22 @@ export default function MuseumSection() {
 
       <div className="flex flex-col items-center gap-6 sm:items-start">
         <Reveal>
-          <h2 className="text-4xl font-bold tracking-tight text-gradient-cheetara sm:text-6xl">
+          <h2 className="text-5xl font-bold tracking-tight text-gradient-cheetara sm:text-7xl">
             Museu Cheetaras
           </h2>
-          <span className="mt-2 block text-xs font-semibold tracking-widest text-cheetara-pink uppercase">
+          <span className="mt-2 block text-sm font-semibold tracking-widest text-cheetara-pink uppercase">
             Relembre as edições
           </span>
         </Reveal>
 
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           {PHOTOS.map((photo, i) => (
             <button
               key={photo}
               type="button"
               aria-label={`Ir para foto ${i + 1}`}
               onClick={() => go(i)}
-              className={`h-2 w-2 rounded-full transition-colors ${
+              className={`h-3.5 w-3.5 rounded-full transition-colors ${
                 i === index ? "bg-gradient-cheetara" : "bg-black/15"
               }`}
             />
