@@ -11,20 +11,25 @@ import { useEffect, useState } from "react";
  * aqui no mobile, sem hover pra disparar sob demanda, a borda é 100% CSS
  * (`.enroll-gradient-border::before` em globals.css, técnica de
  * mask-composite — sem SVG) pulsando de opacidade em loop constante.
- * Nada de SVG de propósito: essa é a segunda versão do componente — a
- * primeira usava um `<rect>` de SVG pra borda e reproduziu mais de um bug
- * de renderização (calc() em atributo SVG ignorado, tamanho provavelmente
- * vazando pro cálculo do pai) especificamente num iPhone 15 Pro Max.
- * Centralizado via `left-1/2` + `-translate-x-1/2` (mesma técnica de
- * FloatingCTA.tsx), com largura fixa (`w-[220px]`, não
- * `w-[calc(100%-2rem)] max-w-[220px]`): essa combinação de `calc()` +
- * `max-width` num elemento `fixed` chegou a renderizar bem maior que o
- * esperado no Chrome iOS (mesmo já correto no Safari iOS) — largura fixa
- * remove essa interação por completo. Aparece já no carregamento (não
- * espera rolagem) e some de novo perto do fim da página, senão sobrepõe o
- * crédito no footer (mesmo `FOOTER_CLEARANCE_PX` de FloatingCTA.tsx).
+ *
+ * Zero `transform` neste elemento de propósito (nem pra centralizar, nem
+ * pra animar entrada). `position: fixed` + `transform` é uma combinação
+ * com bug conhecido e antigo no Chrome iOS (que roda sobre WebKit, igual
+ * Safari, mas tem seu próprio histórico de esticar/deformar elementos
+ * `fixed` transformados) — bateu exatamente com o botão renderizando bem
+ * maior que o esperado especificamente no Chrome iOS, mesmo já correto no
+ * Safari iOS. Centralização via `left: 50%` + `margin-left` negativo
+ * (metade da largura fixa) em vez de `-translate-x-1/2`; entrada só por
+ * `opacity` (sem slide via `translate-y`).
+ *
+ * Aparece já no carregamento (não espera rolagem) e some de novo perto do
+ * fim da página, senão sobrepõe o crédito no footer (mesmo
+ * `FOOTER_CLEARANCE_PX` de FloatingCTA.tsx — esse aqui pode usar
+ * `transform`/`translate-x` à vontade, é `sm:block`, não aparece no
+ * Chrome iOS/mobile).
  */
 const FOOTER_CLEARANCE_PX = 140;
+const WIDTH_PX = 220;
 
 export default function EnrollLedBar() {
   const [visible, setVisible] = useState(false);
@@ -57,12 +62,15 @@ export default function EnrollLedBar() {
       href="#museu"
       aria-label="Inscreva-se"
       aria-hidden={!shown}
-      className={`enroll-gradient-border fixed left-1/2 bottom-20 z-40 w-[220px] rounded-xl bg-white/95 shadow-sm transition-[transform,opacity] duration-300 sm:hidden ${
-        shown
-          ? "-translate-x-1/2 translate-y-0 opacity-100"
-          : "pointer-events-none -translate-x-1/2 translate-y-4 opacity-0"
+      className={`enroll-gradient-border fixed bottom-20 z-40 rounded-xl bg-white/95 shadow-sm transition-opacity duration-300 sm:hidden ${
+        shown ? "opacity-100" : "pointer-events-none opacity-0"
       }`}
-      style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
+      style={{
+        left: "50%",
+        marginLeft: `-${WIDTH_PX / 2}px`,
+        width: `${WIDTH_PX}px`,
+        paddingBottom: "env(safe-area-inset-bottom, 0px)",
+      }}
     >
       <span className="relative flex items-center justify-center gap-1.5 px-4 py-2.5 text-center text-sm font-semibold tracking-wide text-foreground">
         INSCREVA-SE
