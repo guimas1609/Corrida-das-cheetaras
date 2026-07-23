@@ -210,35 +210,50 @@ body {
   animation: side-line-drift 5s ease-in-out infinite;
 }
 
-/* Borda do botão de inscrição (EnrollLedBar.tsx) "se desenhando" — no
-   mobile não tem hover pra disparar isso sob demanda, então fica em loop:
-   desenha, segura um instante, recolhe, repete. (Chegou a virar um pulso
-   de opacidade por suspeita de que stroke-dashoffset causava um bug de
-   renderização num iPhone específico — a causa real era outra, CSS de
-   largura/centralização do botão, já corrigida em EnrollLedBar.tsx, então
-   voltou pro efeito original.) */
-@keyframes border-draw-loop {
-  0% {
-    stroke-dashoffset: 100;
-  }
-  40% {
-    stroke-dashoffset: 0;
-  }
-  60% {
-    stroke-dashoffset: 0;
-  }
-  100% {
-    stroke-dashoffset: 100;
-  }
+/* Borda em gradiente do botão de inscrição mobile (EnrollLedBar.tsx),
+   100% CSS — sem SVG. Depois de vários bugs de renderização ligados a SVG
+   nesse componente num iPhone específico (calc() em atributo SVG
+   ignorado, tamanho intrínseco de SVG sem width/height explícitos
+   "vazando" pro cálculo de auto-sizing do pai), a borda virou esse
+   `::before` com `mask-composite` — técnica padrão de "gradiente só na
+   borda" sem precisar de SVG, `calc()` em atributo não-CSS ou gradiente
+   por elemento. Aplicada via classe `.enroll-gradient-border` no botão
+   (fixed já é positioned, então o `::before` ancora nele sem precisar de
+   `relative` extra). Sem hover no mobile pra disparar a borda sob demanda
+   (isso já acontece de verdade no desktop — FloatingCTA.tsx / CTA do
+   hero, via stroke-dashoffset + transition, um SVG simples sem gradiente
+   que nunca deu problema), então aqui é um pulso de opacidade em loop —
+   direto no `::before`, já que pseudo-elemento não recebe className do
+   React pra levar uma classe de animação separada. */
+.enroll-gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: var(--gradient-cheetara);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  animation: border-draw-loop 2.4s ease-in-out infinite;
 }
 
-.animate-border-draw {
-  animation: border-draw-loop 3.2s ease-in-out infinite;
+@keyframes border-draw-loop {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 /* Reduz movimento: textos letra-por-letra (RevealText.tsx) aparecem
-   direto, sem stagger nem transição; a borda animada do CTA fica estática
-   (recolhida). */
+   direto, sem stagger nem transição; a borda em gradiente do CTA fica
+   estática (visível, sem pulsar). */
 @media (prefers-reduced-motion: reduce) {
   .reveal-text-char {
     transition: none !important;
@@ -246,8 +261,8 @@ body {
     transform: none !important;
   }
 
-  .animate-border-draw {
+  .enroll-gradient-border::before {
     animation: none !important;
-    stroke-dashoffset: 100 !important;
+    opacity: 1 !important;
   }
 }
