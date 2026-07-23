@@ -24,8 +24,15 @@ import { useEffect, useState } from "react";
  * width/height explícitos vazando pro auto-sizing do pai): `WIDTH_PX` e
  * `HEIGHT_PX` abaixo são constantes fixas aplicadas tanto no CSS do botão
  * quanto no `viewBox`/`width`/`height` do SVG, numa correspondência 1:1 —
- * nada de `calc()` em atributo SVG, nada de porcentagem, nada de tamanho
- * dependente de conteúdo pro navegador "adivinhar".
+ * nada de `calc()` em atributo SVG, nada de tamanho dependente de conteúdo
+ * pro navegador "adivinhar". Também nada de altura em porcentagem
+ * (`h-full`) nos elementos entre o `<a>` e o SVG: no Chrome (não no
+ * Safari), `height: 100%` de um filho de um ancestral `position: fixed`
+ * com `padding-bottom: env(safe-area-inset-bottom)` resolve errado (a
+ * altura do ancestral vira "indeterminada" pra esse cálculo específico),
+ * fazendo o `absolute inset-0` do SVG esticar pra um tamanho gigante em
+ * vez dos 220x44 esperados — todo mundo nessa cadeia usa `WIDTH_PX`/
+ * `HEIGHT_PX` em px direto no `style`, sem depender de porcentagem.
  *
  * Zero `transform` neste elemento de propósito (nem pra centralizar, nem
  * pra animar entrada). `position: fixed` + `transform` é uma combinação
@@ -90,10 +97,13 @@ export default function EnrollLedBar() {
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
       }}
     >
-      <span className="relative block h-full w-full rounded-xl bg-white/95 shadow-sm">
+      <span
+        className="relative block rounded-xl bg-white/95 shadow-sm"
+        style={{ width: `${WIDTH_PX}px`, height: `${HEIGHT_PX}px` }}
+      >
         <svg
           aria-hidden
-          className="pointer-events-none absolute inset-0"
+          className="pointer-events-none absolute left-0 top-0"
           width={WIDTH_PX}
           height={HEIGHT_PX}
           viewBox={`0 0 ${WIDTH_PX} ${HEIGHT_PX}`}
@@ -119,7 +129,10 @@ export default function EnrollLedBar() {
           />
         </svg>
 
-        <span className="relative z-10 flex h-full items-center justify-center gap-1.5 px-4 text-center text-sm font-semibold tracking-wide text-foreground">
+        <span
+          className="relative z-10 flex items-center justify-center gap-1.5 px-4 text-center text-sm font-semibold tracking-wide text-foreground"
+          style={{ height: `${HEIGHT_PX}px` }}
+        >
           INSCREVA-SE
           <svg
             aria-hidden
