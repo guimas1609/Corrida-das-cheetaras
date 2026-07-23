@@ -98,6 +98,25 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
+/* Entrada da RouteSection só mobile: em vez de sobrepor um retângulo
+   opaco por cima do fundo (duas camadas competindo, sempre lê como corte
+   perto do fim do fade), aplica um mask-image no próprio fundo (gradiente
+   + ruído do ::after, os dois juntos) — ele "nasce" transparente e revela
+   o holográfico global por trás, sem nenhuma camada extra. Comprimento em
+   px (não %) pra não depender da altura total da seção, que muda com o
+   conteúdo. Só existe abaixo do breakpoint `sm` do Tailwind (640px). */
+.route-carpet-fade {
+  mask-image: linear-gradient(to bottom, transparent 0, black 220px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 220px);
+}
+
+@media (min-width: 640px) {
+  .route-carpet-fade {
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+}
+
 /* Zoom lentíssimo (Ken Burns) na foto do hero — só percebido depois de
    alguns segundos, nunca chamativo. */
 @keyframes hero-zoom {

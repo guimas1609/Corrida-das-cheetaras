@@ -26,7 +26,7 @@ export default function EnrollLedBar() {
       href="#museu"
       aria-label="Inscreva-se"
       aria-hidden={!visible}
-      className={`fixed inset-x-4 bottom-20 z-40 mx-auto max-w-[220px] rounded-xl border border-black/10 bg-white/80 shadow-sm backdrop-blur-sm transition-all duration-300 sm:hidden ${
+      className={`fixed inset-x-4 bottom-20 z-40 mx-auto max-w-[220px] rounded-xl border border-black/10 bg-white/95 shadow-sm transition-all duration-300 sm:hidden ${
         visible
           ? "translate-y-0 opacity-100"
           : "pointer-events-none translate-y-4 opacity-0"

@@ -18,25 +18,15 @@ const AGE_GROUPS = [
 
 export default function RouteSection() {
   return (
-    <section
-      id="percurso"
-      className="route-carpet-bg relative w-full overflow-hidden"
-    >
-      {/* Fade de entrada — só mobile, onde o corte do fundo claro pro
-          fundo cheio da seção era mais brusco (no desktop as bordas
-          arredondadas dos cards ao redor já suavizam a transição). Vai do
-          background do site (mesmo tom de fora da seção) até transparent,
-          por cima do fundo com ruído. Paradas extras em vez de um
-          gradiente linear simples de 2 pontas: o olho percebe fade linear
-          de opacidade como "corte" perto do fim — essa curva (queda mais
-          lenta no começo, mais rápida no fim) lê como suave de verdade. */}
+    <section id="percurso" className="relative w-full overflow-hidden">
+      {/* Fundo separado do conteúdo de propósito: o mask-image de entrada
+          (só mobile, ver .route-carpet-fade em globals.css) fica só
+          aqui — se estivesse na <section> inteira, mascararia o texto
+          junto (que começa bem antes do fundo terminar de "nascer" numa
+          seção alta assim), ficando ilegível no topo. */}
       <div
         aria-hidden
-        className="absolute inset-x-0 top-0 z-[1] h-32 sm:hidden"
-        style={{
-          background:
-            "linear-gradient(to bottom, rgba(253,247,251,1) 0%, rgba(253,247,251,0.85) 30%, rgba(253,247,251,0.5) 65%, rgba(253,247,251,0) 100%)",
-        }}
+        className="route-carpet-bg route-carpet-fade absolute inset-0 z-0"
       />
 
       <div className="relative z-10 mx-auto w-full max-w-5xl px-6 py-24 sm:py-32">
