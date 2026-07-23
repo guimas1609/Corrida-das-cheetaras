@@ -33,7 +33,7 @@ export default function ScrollJaguarSection() {
           cantos emendados, em vez de duas posições absolutas "chutadas"
           independentemente. */}
       <div className="absolute inset-x-4 top-4 z-20 sm:inset-x-8 sm:top-6">
-        <header className="relative flex items-center justify-between rounded-t-2xl border border-black/5 bg-white/50 px-5 py-3 shadow-sm backdrop-blur-sm">
+        <header className="relative z-10 flex items-center justify-between rounded-t-2xl border border-black/5 bg-white/50 px-5 py-3 shadow-sm backdrop-blur-sm">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/logo/cheetaras-mark.png"
@@ -127,21 +127,56 @@ export default function ScrollJaguarSection() {
             assume é o FloatingCTA, que só aparece depois que a pessoa rola
             a tela (ver FloatingCTA.tsx). */}
         <Reveal delay={200} className="hidden sm:block">
+          {/* Mesma linguagem visual de FloatingCTA.tsx e EnrollLedBar.tsx —
+              outline claro + borda que se desenha em SVG no hover
+              (group-hover), pra os CTAs do site ficarem consistentes. */}
           <a
             href="#museu"
-            className="relative block overflow-hidden border border-white/40 bg-gradient-to-br from-cheetara-pink/90 to-cheetara-purple/90 px-10 py-3 text-base font-medium text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_8px_30px_rgba(96,32,136,0.4)] backdrop-blur-md transition [clip-path:polygon(16px_0,100%_0,100%_calc(100%-16px),calc(100%-16px)_100%,0_100%,0_16px)] hover:from-cheetara-pink hover:to-cheetara-purple"
+            className="group relative block rounded-2xl border border-black/10 bg-white/80 px-10 py-3 text-base font-medium text-foreground shadow-sm backdrop-blur-sm transition"
           >
-            {/* Sheen de vidro/gel — realce claro na metade de cima. */}
-            <span
+            <svg
               aria-hidden
-              className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/35 to-transparent"
-            />
-            <span
-              aria-hidden
-              className="pointer-events-none absolute inset-0 -translate-x-full animate-button-shine bg-[linear-gradient(115deg,transparent_35%,rgba(255,255,255,0.65)_50%,transparent_65%)]"
-            />
-            <span className="relative drop-shadow-[0_1px_2px_rgba(0,0,0,0.25)]">
+              className="pointer-events-none absolute inset-0 h-full w-full"
+              preserveAspectRatio="none"
+            >
+              <defs>
+                <linearGradient id="hero-cta-border-gradient" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="var(--color-cheetara-pink)" />
+                  <stop offset="100%" stopColor="var(--color-cheetara-purple)" />
+                </linearGradient>
+              </defs>
+              <rect
+                x="1"
+                y="1"
+                width="calc(100% - 2px)"
+                height="calc(100% - 2px)"
+                rx="15"
+                fill="none"
+                stroke="url(#hero-cta-border-gradient)"
+                strokeWidth="1.5"
+                vectorEffect="non-scaling-stroke"
+                pathLength={100}
+                strokeDasharray={100}
+                className="[stroke-dashoffset:100] transition-[stroke-dashoffset] duration-500 ease-out group-hover:[stroke-dashoffset:0]"
+              />
+            </svg>
+
+            <span className="relative flex items-center justify-center gap-2">
               Quero me inscrever
+              <svg
+                aria-hidden
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="7" y1="17" x2="17" y2="7" />
+                <polyline points="8 7 17 7 17 16" />
+              </svg>
             </span>
           </a>
         </Reveal>

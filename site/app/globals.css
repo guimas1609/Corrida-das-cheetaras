@@ -79,6 +79,25 @@ body {
   background: var(--gradient-cheetara);
 }
 
+/* Fundo cheio (RouteSection.tsx) — gradiente de marca bem saturado com
+   grão pesado por cima, pra lembrar textura de tapete/carpete de linha de
+   chegada em vez do papel de parede liso do resto do site. Grão mais
+   forte e mais grosso que o do .holographic-bg (baseFrequency menor,
+   opacidade maior, sem saturate=0 — mantém uma leve cor no ruído em vez
+   de cinza puro). */
+.route-carpet-bg {
+  background: linear-gradient(135deg, var(--color-cheetara-pink), var(--color-cheetara-purple) 65%, #3a1450);
+}
+
+.route-carpet-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.45;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
 /* Zoom lentíssimo (Ken Burns) na foto do hero — só percebido depois de
    alguns segundos, nunca chamativo. */
 @keyframes hero-zoom {
@@ -92,21 +111,6 @@ body {
 
 .animate-hero-zoom {
   animation: hero-zoom 24s ease-out forwards;
-}
-
-/* Brilho passando pelo CTA — varre o botão inteiro, de ponta a ponta, num
-   único movimento contínuo (sem parar/segurar no meio) antes de repetir. */
-@keyframes button-shine {
-  0% {
-    transform: translateX(-160%) skewX(-15deg);
-  }
-  100% {
-    transform: translateX(160%) skewX(-15deg);
-  }
-}
-
-.animate-button-shine {
-  animation: button-shine 2.6s ease-in-out infinite;
 }
 
 /* Flutuação suave da logo no mobile — lá não tem cursor pra reagir ao
@@ -187,12 +191,40 @@ body {
   animation: side-line-drift 5s ease-in-out infinite;
 }
 
+/* Borda do botão de inscrição (EnrollLedBar.tsx) "se desenhando" — no
+   mobile não tem hover pra disparar isso sob demanda, então fica em loop:
+   desenha, segura um instante, recolhe, repete. */
+@keyframes border-draw-loop {
+  0% {
+    stroke-dashoffset: 100;
+  }
+  40% {
+    stroke-dashoffset: 0;
+  }
+  60% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: 100;
+  }
+}
+
+.animate-border-draw {
+  animation: border-draw-loop 3.2s ease-in-out infinite;
+}
+
 /* Reduz movimento: textos letra-por-letra (RevealText.tsx) aparecem
-   direto, sem stagger nem transição. */
+   direto, sem stagger nem transição; a borda animada do CTA fica estática
+   (recolhida). */
 @media (prefers-reduced-motion: reduce) {
   .reveal-text-char {
     transition: none !important;
     opacity: 1 !important;
     transform: none !important;
+  }
+
+  .animate-border-draw {
+    animation: none !important;
+    stroke-dashoffset: 100 !important;
   }
 }

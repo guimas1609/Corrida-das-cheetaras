@@ -12,6 +12,7 @@ const RACE_DATE = new Date(2026, 7, 29);
 const DAY_MS = 86_400_000;
 const HOUR_MS = 3_600_000;
 const MINUTE_MS = 60_000;
+const COUNT_UP_MS = 900;
 
 type TimeLeft = { days: number; hours: number; minutes: number };
 
@@ -54,13 +55,19 @@ function LedPair({ value, label }: { value: number; label: string }) {
  * dias:horas:minutos, atualizando a cada minuto. Calcula no client
  * (useEffect, não no render): `Date.now()` no render causaria
  * incompatibilidade de hidratação entre servidor e client. Entra com um
- * slide-down de altura (grid-rows) pouco depois do carregamento, na mesma
- * sequência de entrada do logo/CTA (Reveal / Reveal delay={200} em
- * ScrollJaguarSection.tsx), e fica montada (não recolhe sozinha depois).
+ * slide-down por `max-height` (não `grid-template-rows`: esse não anima
+ * de forma confiável no Safari mobile, só salta pro estado final) pouco
+ * depois do carregamento, na mesma sequência de entrada do logo/CTA
+ * (Reveal / Reveal delay={200} em ScrollJaguarSection.tsx). Os três valores
+ * contam de 0 até o real na primeira aparição, só de efeito visual — fica
+ * montada depois (não recolhe sozinha).
  */
+const ZERO: TimeLeft = { days: 0, hours: 0, minutes: 0 };
+
 export default function RaceCountdownBanner() {
   const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
   const [visible, setVisible] = useState(false);
+  const [display, setDisplay] = useState<TimeLeft>(ZERO);
 
   useEffect(() => {
     const openId = setTimeout(() => {
@@ -69,7 +76,9 @@ export default function RaceCountdownBanner() {
     }, 350);
 
     const intervalId = setInterval(() => {
-      setTimeLeft(computeTimeLeft());
+      const next = computeTimeLeft();
+      setTimeLeft(next);
+      setDisplay(next);
     }, MINUTE_MS);
 
     return () => {
@@ -78,18 +87,45 @@ export default function RaceCountdownBanner() {
     };
   }, []);
 
+  // Conta de 0 até os valores reais uma vez, quando a placa fica visível
+  // (o interval acima já mantém `display` em dia depois disso, sem
+  // reanimar — só dispara de novo se `visible` virar false→true de novo,
+  // o que não acontece hoje).
+  useEffect(() => {
+    if (!visible || timeLeft === null) return;
+    const target = timeLeft;
+    const start = performance.now();
+    let rafId: number;
+    const step = (now: number) => {
+      const progress = Math.min((now - start) / COUNT_UP_MS, 1);
+      const eased = 1 - (1 - progress) ** 3;
+      setDisplay({
+        days: Math.round(eased * target.days),
+        hours: Math.round(eased * target.hours),
+        minutes: Math.round(eased * target.minutes),
+      });
+      if (progress < 1) rafId = requestAnimationFrame(step);
+    };
+    rafId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(rafId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible]);
+
   if (timeLeft === null || timeLeft.days < 0) return null;
 
   return (
     <div
       aria-hidden={!visible}
-      className={`grid ${visible ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
-      style={{ transition: "grid-template-rows 700ms ease-out" }}
+      className="overflow-hidden"
+      style={{
+        maxHeight: visible ? "10rem" : "0px",
+        transition: "max-height 700ms ease-out",
+      }}
     >
-      <div className="flex justify-center overflow-hidden">
+      <div className="flex justify-center">
         <div
-          className={`relative flex items-center justify-center gap-3 rounded-b-2xl border-x border-b border-black/20 bg-[#0a1710] px-4 py-1.5 shadow-[inset_0_2px_6px_rgba(0,0,0,0.6)] transition-opacity duration-500 sm:gap-4 sm:px-6 sm:py-2 ${
-            visible ? "opacity-100 delay-150" : "opacity-0"
+          className={`relative flex items-center justify-center gap-3 rounded-b-2xl border-x border-b border-black/20 bg-[#0a1710] px-4 py-1.5 shadow-[inset_0_2px_6px_rgba(0,0,0,0.6)] transition-all duration-500 delay-150 ease-out sm:gap-4 sm:px-6 sm:py-2 ${
+            visible ? "translate-y-0 opacity-100" : "-translate-y-3 opacity-0"
           }`}
         >
           {/* Traço de brand no topo da placa, colada na navbar. */}
@@ -97,19 +133,19 @@ export default function RaceCountdownBanner() {
             aria-hidden
             className="absolute inset-x-0 top-0 h-[2px] bg-gradient-cheetara"
           />
-          <LedPair value={timeLeft.days} label="dias" />
+          <LedPair value={display.days} label="dias" />
           <span
             className={`${digitFont.className} mb-3 text-xl text-[#39ff6a] [text-shadow:0_0_3px_currentColor] sm:mb-4 sm:text-2xl`}
           >
             :
           </span>
-          <LedPair value={timeLeft.hours} label="horas" />
+          <LedPair value={display.hours} label="horas" />
           <span
             className={`${digitFont.className} mb-3 text-xl text-[#39ff6a] [text-shadow:0_0_3px_currentColor] sm:mb-4 sm:text-2xl`}
           >
             :
           </span>
-          <LedPair value={timeLeft.minutes} label="min" />
+          <LedPair value={display.minutes} label="min" />
         </div>
       </div>
     </div>

@@ -42,6 +42,22 @@ export default function HeroLogo() {
 
   return (
     <div className="relative flex flex-col items-center">
+      {/* Clareada radial atrás da logo — a foto de fundo é bem "cheia" ali
+          (multidão + treliças), então mesmo com o drop-shadow abaixo a
+          logo (traços finos) perde contraste. Isso cria um respiro claro
+          só na área dela, com borda bem esfumaçada (sem corte visível),
+          sem lavar o resto da foto. `-m-*` expande além do `inset-0` do
+          pai pra a borda ter espaço de sumir em transparent antes de
+          qualquer aresta. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-0 -m-10 sm:-m-16"
+        style={{
+          background:
+            "radial-gradient(ellipse 60% 60% at 50% 50%, rgba(255,255,255,0.65) 0%, rgba(255,255,255,0.3) 45%, transparent 75%)",
+        }}
+      />
+
       {/* O float/idle fica só no wrapper — nunca no <img>. CSS animation
           vence inline style pra mesma propriedade (transform), então se a
           animação de flutuar ficasse no <img> ela apagava o tilt do JS
@@ -50,7 +66,7 @@ export default function HeroLogo() {
           navegador etc.) — o tilt calculava certo mas nunca aparecia. Com a
           animação isolada aqui, o transform do <img> é 100% controlado pelo
           JS, em qualquer largura. */}
-      <div className="animate-logo-float sm:animate-hero-logo-idle">
+      <div className="relative z-10 animate-logo-float sm:animate-hero-logo-idle">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           ref={ref}

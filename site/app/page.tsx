@@ -4,11 +4,13 @@ import KitSection from "./components/KitSection";
 import PrizesSection from "./components/PrizesSection";
 import RouteSection from "./components/RouteSection";
 import FloatingCTA from "./components/FloatingCTA";
+import EnrollLedBar from "./components/EnrollLedBar";
 
 export default function Home() {
   return (
     <div className="relative flex flex-1 flex-col">
       <FloatingCTA />
+      <EnrollLedBar />
       <ScrollJaguarSection />
 
       <div className="relative z-10 h-2 w-full bg-gradient-cheetara" />
@@ -20,7 +22,12 @@ export default function Home() {
       <div aria-hidden className="mx-auto h-px w-full max-w-xs bg-gradient-cheetara opacity-30" />
 
       <PrizesSection />
-      <div aria-hidden className="mx-auto h-px w-full max-w-xs bg-gradient-cheetara opacity-30" />
+      {/* Só desktop: no mobile RouteSection já tem seu próprio fade de
+          entrada (fundo cheio com ruído), essa linha fica sobrando ali. */}
+      <div
+        aria-hidden
+        className="mx-auto hidden h-px w-full max-w-xs bg-gradient-cheetara opacity-30 sm:block"
+      />
 
       <RouteSection />
 
