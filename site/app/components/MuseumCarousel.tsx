@@ -94,7 +94,15 @@ function DeckSlide({
     clamp: true,
   });
   const zIndex = useTransform(offset, (o) => Math.round(10 - Math.abs(o) * 5));
-  const initialIsCenter = Math.abs(offset.get()) < 0.05;
+  // 0.4, não 0.05: com uma janela minúscula, a foto NUNCA era "central"
+  // enquanto o usuário arrastava/rolava (só parada, exatamente em cima do
+  // inteiro) — a foto que devia estar em foco ganhava a máscara de borda
+  // (pensada só pras vizinhas distantes) bem no meio do gesto, cortando um
+  // pedaço dela. Com uma janela mais generosa, ela só "descentraliza" (e
+  // ganha o fade) depois de já ter andado bastante em direção à posição de
+  // vizinha.
+  const CENTER_THRESHOLD = 0.4;
+  const initialIsCenter = Math.abs(offset.get()) < CENTER_THRESHOLD;
   const isCenterRef = useRef(initialIsCenter);
   const [isCenter, setIsCenter] = useState(initialIsCenter);
   // Lado de onde a foto está em relação ao centro — o fade de opacidade só
@@ -102,17 +110,18 @@ function DeckSlide({
   // corta), não na borda voltada pro centro. Desvanecer os dois lados
   // igualmente deixava um vão branco enorme entre a foto central e a
   // vizinha, bem maior que o espaço geométrico real entre elas.
-  const initialSide = offset.get() < -0.05 ? "left" : offset.get() > 0.05 ? "right" : "center";
+  const initialSide =
+    offset.get() < -CENTER_THRESHOLD ? "left" : offset.get() > CENTER_THRESHOLD ? "right" : "center";
   const sideRef = useRef<"left" | "right" | "center">(initialSide);
   const [side, setSide] = useState(initialSide);
   useEffect(() => {
     return offset.on("change", (o) => {
-      const center = Math.abs(o) < 0.05;
+      const center = Math.abs(o) < CENTER_THRESHOLD;
       if (center !== isCenterRef.current) {
         isCenterRef.current = center;
         setIsCenter(center);
       }
-      const nextSide = o < -0.05 ? "left" : o > 0.05 ? "right" : "center";
+      const nextSide = o < -CENTER_THRESHOLD ? "left" : o > CENTER_THRESHOLD ? "right" : "center";
       if (nextSide !== sideRef.current) {
         sideRef.current = nextSide;
         setSide(nextSide);

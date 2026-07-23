@@ -25,7 +25,7 @@ const FADE_TO_WHITE = {
 
 export default function ScrollJaguarSection() {
   return (
-    <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-background">
+    <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-background sm:bg-transparent">
       {/* Navbar flutuante, discreta — leve translucidez e blur suave, sem
           competir com o hero claro. */}
       <header className="absolute inset-x-4 top-4 z-20 flex items-center justify-between rounded-2xl border border-black/5 bg-white/50 px-5 py-3 shadow-sm backdrop-blur-sm sm:inset-x-8 sm:top-6">
@@ -41,32 +41,66 @@ export default function ScrollJaguarSection() {
       {/* Foto de fundo: alto brilho, baixa saturação, contraste moderado —
           leve, nunca dramática. Zoom lento tipo Ken Burns, contido pelo
           overflow-hidden do wrapper. */}
-      <div aria-hidden className="absolute inset-0 overflow-hidden">
+      <div aria-hidden className="absolute inset-0 overflow-hidden sm:hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={BG_IMAGE_MOBILE}
           alt=""
-          className="h-full w-full scale-100 animate-hero-zoom object-cover brightness-[1.4] contrast-[0.9] saturate-[0.2] sm:hidden"
+          className="h-full w-full scale-100 animate-hero-zoom object-cover brightness-[1.4] contrast-[0.9] saturate-[0.2]"
         />
+      </div>
+
+      {/* Desktop (teste): sem foto de fundo full-bleed — a seção agora é
+          `sm:bg-transparent` (ver className acima), então o fundo
+          holográfico global (HolographicBackground.tsx, o mesmo usado no
+          resto do site) aparece atrás. Sobra só a foto do card abaixo como
+          único objeto de foco, em vez de duas fotos competindo. */}
+
+      {/* Desktop (teste): a foto do hero vira um card contido, tamanho
+          moderado, centralizado — como se "flutuasse" atrás da logo (que
+          já fica centralizada no mesmo ponto via flex, no wrapper de
+          conteúdo abaixo). Nítida/natural, sem lavar em branco — não tem
+          mais outra camada full-bleed pra competir visualmente. z-index
+          entre o fundo e o conteúdo (z-10), então a logo aparece por cima
+          do card. */}
+      <div
+        aria-hidden
+        className="absolute top-1/2 left-1/2 z-[6] hidden h-[85vh] w-[90%] max-w-7xl -translate-x-1/2 -translate-y-1/2 sm:block"
+      >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={BG_IMAGE_DESKTOP}
           alt=""
-          className="hidden h-full w-full scale-100 animate-hero-zoom object-cover brightness-[1.4] contrast-[0.9] saturate-[0.2] sm:block"
+          // Fade nas bordas (correção): o raio da elipse (70% 70%) media
+          // 70% da caixa a partir do centro — como a borda da imagem fica a
+          // só 50% do centro, o mask nunca chegava a "transparent" dentro
+          // da própria caixa, então a borda continuava com um corte reto
+          // (só um pouco mais escura). Com raio menor (40%), o degradê
+          // termina ANTES da borda, sobrando uma margem de transparência de
+          // verdade. Sem cor (grayscale) + brilho bem alto + opacidade
+          // geral menor, pra ficar bem mais branca e a logo se destacar.
+          style={{
+            maskImage:
+              "radial-gradient(ellipse 40% 40% at 50% 50%, black 20%, rgba(0,0,0,0.5) 55%, transparent 100%)",
+            WebkitMaskImage:
+              "radial-gradient(ellipse 40% 40% at 50% 50%, black 20%, rgba(0,0,0,0.5) 55%, transparent 100%)",
+          }}
+          className="h-full w-full object-cover opacity-70 grayscale brightness-[1.6] contrast-[1.05]"
         />
       </div>
 
-      {/* Véu branco uniforme por cima de toda a foto — garante leveza e
-          contraste pro texto em qualquer ponto, não só nas bordas. */}
-      <div aria-hidden className="absolute inset-0 bg-background/55" />
+      {/* Véu branco uniforme por cima de toda a foto — só mobile agora
+          (o desktop não tem mais foto full-bleed pra clarear). */}
+      <div aria-hidden className="absolute inset-0 bg-background/55 sm:hidden" />
 
-      {/* Dissolve a foto em branco nas bordas — a única "moldura" é o
-          próprio fundo do site. */}
-      <div aria-hidden className="absolute inset-0" style={FADE_TO_WHITE} />
+      {/* Dissolve a foto em branco nas bordas — só mobile agora; no
+          desktop o fundo holográfico global já é a base calma da cena. */}
+      <div aria-hidden className="absolute inset-0 sm:hidden" style={FADE_TO_WHITE} />
 
-      {/* Faixa de luz local: o fundo opaco acima esconde a instância global
-          (ver layout.tsx), então o hero tem a sua própria, acima da foto e
-          abaixo do conteúdo (z-10). */}
+      {/* Faixa de luz local — no mobile o fundo opaco da seção esconde a
+          instância global (ver layout.tsx), então o hero tem a sua
+          própria, acima da foto e abaixo do conteúdo (z-10). No desktop
+          convive normalmente com o holográfico que já aparece atrás. */}
       <CursorGlow zIndexClassName="z-[5]" />
 
       {/* Linhas verticais nas laterais — só desktop, reagem ao mouse. */}

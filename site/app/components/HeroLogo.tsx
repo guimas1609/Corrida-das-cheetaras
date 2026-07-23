@@ -41,21 +41,30 @@ export default function HeroLogo() {
   }, []);
 
   return (
-    // O float/idle fica só no wrapper — nunca no <img>. CSS animation vence
-    // inline style pra mesma propriedade (transform), então se a animação
-    // de flutuar ficasse no <img> ela apagava o tilt do JS sempre que o
-    // "sm:animate-none" não estivesse valendo (janela redimensionada,
-    // DevTools aberto encolhendo a viewport, zoom do navegador etc.) — o
-    // tilt calculava certo mas nunca aparecia. Com a animação isolada aqui,
-    // o transform do <img> é 100% controlado pelo JS, em qualquer largura.
-    <div className="animate-logo-float sm:animate-hero-logo-idle">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        ref={ref}
-        src="/api/drive-image?id=11y8Ot9i6RQqv7q8OdAUxeptlTcNrA7Hi&w=800"
-        alt="Corrida das Cheetaras"
-        className="h-56 w-auto cursor-pointer transition-transform duration-500 ease-out will-change-transform sm:h-80"
-      />
+    <div className="relative flex flex-col items-center">
+      {/* O float/idle fica só no wrapper — nunca no <img>. CSS animation
+          vence inline style pra mesma propriedade (transform), então se a
+          animação de flutuar ficasse no <img> ela apagava o tilt do JS
+          sempre que o "sm:animate-none" não estivesse valendo (janela
+          redimensionada, DevTools aberto encolhendo a viewport, zoom do
+          navegador etc.) — o tilt calculava certo mas nunca aparecia. Com a
+          animação isolada aqui, o transform do <img> é 100% controlado pelo
+          JS, em qualquer largura. */}
+      <div className="animate-logo-float sm:animate-hero-logo-idle">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          ref={ref}
+          src="/api/drive-image?id=11y8Ot9i6RQqv7q8OdAUxeptlTcNrA7Hi&w=800"
+          alt="Corrida das Cheetaras"
+          // Sombra branca em mobile e desktop — segue o contorno exato do
+          // desenho (drop-shadow usa o alfa do PNG, não uma caixa), sem
+          // precisar duplicar a imagem: um jeito mais simples de destacar
+          // a logo da foto de fundo, que tem pouco contraste ali (tanto no
+          // card do hero desktop quanto na foto full-bleed do mobile).
+          // Mais forte no desktop porque o card ali é mais escuro/denso.
+          className="h-56 w-auto cursor-pointer transition-transform duration-500 ease-out will-change-transform drop-shadow-[0_0_16px_rgba(255,255,255,0.9)] sm:h-80 sm:drop-shadow-[0_0_24px_rgba(255,255,255,0.95)]"
+        />
+      </div>
     </div>
   );
 }
