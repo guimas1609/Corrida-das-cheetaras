@@ -8,7 +8,6 @@ const DISTANCES = [
 ];
 
 const AGE_GROUPS = [
-  "Até 17 anos",
   "18 a 29 anos",
   "30 a 39 anos",
   "40 a 49 anos",

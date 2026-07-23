@@ -12,11 +12,16 @@ const ALLOWED_IDS = new Set([
   "1P0Z5S8son1FKHLjtUolab3v_rYfJGIEP", // troféu 2026
   "1D_YfWTZWyAdSzIEFK8Jps0u6OiJuvkoW", // medalha 2026
   "17BHab8cPQFn7xGyEa_EbNdN_sb4fa_Xj", // museu cheetaras — foto 1
-  "1NbSpLvCx1CRXEqPJOxVuf8PoAPcAqwQK", // museu cheetaras — foto 2
-  "1Q8TUFSdoFD9DoLjHx0J8XMhXwY3VfDO7", // museu cheetaras — foto 3
-  "1OOVFUAxA6pi2C8jvOQwAhwPzUk7q4g7V", // museu cheetaras — foto 4
-  "1lTcDUy1ySWuWd9Kz5UrjAOtDuW2q1PJE", // museu cheetaras — foto 5
-  "1wTI0_0pCDxY_gFtib5Yg1Smt8N3BtX4y", // museu cheetaras — foto 6
+  "1Q8TUFSdoFD9DoLjHx0J8XMhXwY3VfDO7", // museu cheetaras — foto 2
+  "1OOVFUAxA6pi2C8jvOQwAhwPzUk7q4g7V", // museu cheetaras — foto 3
+  "1wTI0_0pCDxY_gFtib5Yg1Smt8N3BtX4y", // museu cheetaras — foto 4
+  "1NBPXaytyJc38qD8r50msxZSfXGpevxcU", // museu cheetaras — foto 5 (corrida noturna)
+  "1ryMIYeXb2y141C2SJwWHWdjFZXh8KZpw", // museu cheetaras — foto 6 (chegada, mãos dadas)
+  "1STeoE-KkKEDUAH-iXMi1ji4Mx3bld13j", // museu cheetaras — foto 7 (premiação, 3º lugar 50+)
+  "1hTnWcAswalUHSqv1ejd1tTK_5m2aywYd", // museu cheetaras — foto 8 (palco, comemoração)
+  "1_ljJfCR98KnqI3zEKSTh6-I6UaP5Wd-y", // museu cheetaras — foto 9 (DJ no palco)
+  "1eBz9aphNGMl5W7oJMOvSjS-eww1lsMzJ", // museu cheetaras — foto 10 (retrato mãe/filha)
+  "1fRjY91eU43n4QyuS9wGloRVioggXC9up", // museu cheetaras — foto 11 (banner Vila das Atletas)
   "1iQJr1iNY857BgnCsJEaF7w48OVpIz-fG", // fundo do hero desktop, foto da corrida
   "1ZI1NzWXc09eyG-BhC6xhsMCPH9stvqUz", // fundo do hero mobile, foto da corrida
   "11y8Ot9i6RQqv7q8OdAUxeptlTcNrA7Hi", // logo oficial (mark), usada no hero
