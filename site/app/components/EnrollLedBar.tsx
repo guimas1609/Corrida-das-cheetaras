@@ -9,8 +9,14 @@ import { useEffect, useState } from "react";
  * borda inteira ao interagir. No desktop (FloatingCTA.tsx / CTA do hero em
  * ScrollJaguarSection.tsx) isso acontece de verdade no hover, via SVG;
  * aqui no mobile, sem hover pra disparar sob demanda, a borda é 100% CSS
- * (`.enroll-gradient-border::before` em globals.css, técnica de
- * mask-composite — sem SVG) pulsando de opacidade em loop constante.
+ * (`.enroll-gradient-border::before` em globals.css) pulsando de opacidade
+ * em loop constante. A borda é feita com duas camadas empilhadas (fundo em
+ * gradiente atrás + `span` branco por cima com `margin` de 1.5px revelando
+ * o anel), não com `-webkit-mask`/`mask-composite`: essa técnica de máscara
+ * combinada com `position: fixed` dá glitch visual no Chrome Android
+ * durante o repaint que acontece ao rolar (recálculo de viewport quando a
+ * barra de endereço esconde/mostra), fazendo a borda "esticar"/deformar —
+ * some no Safari porque lá o repaint da máscara não é afetado.
  *
  * Zero `transform` neste elemento de propósito (nem pra centralizar, nem
  * pra animar entrada). `position: fixed` + `transform` é uma combinação
@@ -62,7 +68,7 @@ export default function EnrollLedBar() {
       href="#museu"
       aria-label="Inscreva-se"
       aria-hidden={!shown}
-      className={`enroll-gradient-border fixed bottom-20 z-40 rounded-xl bg-white/95 shadow-sm transition-opacity duration-300 sm:hidden ${
+      className={`fixed bottom-20 z-40 transition-opacity duration-300 sm:hidden ${
         shown ? "opacity-100" : "pointer-events-none opacity-0"
       }`}
       style={{
@@ -72,22 +78,24 @@ export default function EnrollLedBar() {
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
       }}
     >
-      <span className="relative flex items-center justify-center gap-1.5 px-4 py-2.5 text-center text-sm font-semibold tracking-wide text-foreground">
-        INSCREVA-SE
-        <svg
-          aria-hidden
-          width="13"
-          height="13"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <line x1="7" y1="17" x2="17" y2="7" />
-          <polyline points="8 7 17 7 17 16" />
-        </svg>
+      <span className="enroll-gradient-border relative block rounded-xl shadow-sm">
+        <span className="relative z-10 m-[1.5px] flex items-center justify-center gap-1.5 rounded-[10.5px] bg-white/95 px-4 py-2.5 text-center text-sm font-semibold tracking-wide text-foreground">
+          INSCREVA-SE
+          <svg
+            aria-hidden
+            width="13"
+            height="13"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <line x1="7" y1="17" x2="17" y2="7" />
+            <polyline points="8 7 17 7 17 16" />
+          </svg>
+        </span>
       </span>
     </a>
   );
