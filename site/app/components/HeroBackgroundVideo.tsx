@@ -3,14 +3,13 @@
 import { useEffect, useRef } from "react";
 
 /**
- * `<video autoPlay muted>` sozinho não é confiável pro autoplay no
- * Safari/Chrome mobile: `muted` é uma propriedade do DOM, não um atributo
- * refletido, e o React não a serializa no HTML gerado pelo SSR — no
- * primeiro parse da página (antes da hidratação) o navegador ainda não
- * considera o vídeo mudo e bloqueia o autoplay; quando o React hidrata e
- * seta a propriedade via JS, a política de autoplay já rodou e não tenta
- * de novo (vídeo fica parado no primeiro frame). Setar `.muted = true` e
- * chamar `.play()` direto via ref, no mount, contorna isso.
+ * `<video autoPlay muted>` sozinho às vezes não é suficiente pro autoplay
+ * no Safari/Chrome mobile: `muted` é uma propriedade do DOM, não um
+ * atributo refletido, e o React não garante que ela esteja sincronizada
+ * a tempo da política de autoplay avaliar o elemento. Mantém `autoPlay` +
+ * `muted` nativos no JSX (sinal imediato pro navegador, sem esperar JS) e
+ * reforça com `.muted = true` + `.play()` via ref no mount — se o
+ * navegador ignorar os atributos por algum motivo, o efeito força de novo.
  */
 export default function HeroBackgroundVideo({
   src,
@@ -32,6 +31,7 @@ export default function HeroBackgroundVideo({
     <video
       ref={ref}
       src={src}
+      autoPlay
       muted
       loop
       playsInline
