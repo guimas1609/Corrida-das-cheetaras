@@ -26,7 +26,7 @@ export default function EnrollLedBar() {
       href="#museu"
       aria-label="Inscreva-se"
       aria-hidden={!visible}
-      className={`fixed inset-x-4 bottom-20 z-40 mx-auto max-w-[220px] rounded-xl border border-black/10 bg-white/95 shadow-sm transition-all duration-300 sm:hidden ${
+      className={`fixed inset-x-4 bottom-20 z-40 mx-auto max-w-[220px] transform-gpu rounded-xl border border-black/10 bg-white/95 shadow-sm transition-[transform,opacity] duration-300 will-change-transform sm:hidden ${
         visible
           ? "translate-y-0 opacity-100"
           : "pointer-events-none translate-y-4 opacity-0"
@@ -34,12 +34,13 @@ export default function EnrollLedBar() {
       style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
       {/* Borda animada — desenha e recolhe em loop por cima da borda fixa
-          de baixo. `vectorEffect="non-scaling-stroke"` mantém a espessura
-          do traço estável mesmo o rect esticando pra preencher o botão. */}
+          de baixo. Sem `calc()` nos atributos do rect: Safari mobile não
+          resolve calc() de forma confiável em atributos SVG (não-CSS),
+          o que fazia o rect cair pra tamanho inválido e a linha nem
+          aparecer — só x/y/width/height simples (100%), sem inset. */}
       <svg
         aria-hidden
         className="pointer-events-none absolute inset-0 h-full w-full"
-        preserveAspectRatio="none"
       >
         <defs>
           <linearGradient id="enroll-border-gradient" x1="0" y1="0" x2="1" y2="0">
@@ -48,15 +49,14 @@ export default function EnrollLedBar() {
           </linearGradient>
         </defs>
         <rect
-          x="1"
-          y="1"
-          width="calc(100% - 2px)"
-          height="calc(100% - 2px)"
+          x="0"
+          y="0"
+          width="100%"
+          height="100%"
           rx="11"
           fill="none"
           stroke="url(#enroll-border-gradient)"
           strokeWidth="1.5"
-          vectorEffect="non-scaling-stroke"
           pathLength={100}
           strokeDasharray={100}
           className="animate-border-draw"
