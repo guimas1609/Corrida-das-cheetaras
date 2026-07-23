@@ -286,9 +286,16 @@ export default function MuseumCarousel({
     dragX.set(0);
   }, [mobileIndex, dragX]);
 
+  // O carrossel mobile NÃO segue `reducedMotion` (ao contrário do deck):
+  // a deformação ao arrastar e o deslize entre fotos são o efeito
+  // principal aqui, não um detalhe ambient — quando "reduzir movimento"
+  // está ativo no aparelho, `SETTLE_DURATION` viraria 0 (troca instantânea
+  // em vez de deslizar) e o skew sumiria, o que lia como bug ("muda
+  // rápido", "sem deformar"), não como uma versão mais sóbria da mesma
+  // interação.
   const dragVelocity = useVelocity(dragX);
   const mobileSkewX = useTransform(dragVelocity, (v) =>
-    reducedMotion ? 0 : Math.max(-10, Math.min(10, v * 0.01))
+    Math.max(-10, Math.min(10, v * 0.01))
   );
 
   // Troca pra vizinha (direction=1 → próxima, -1 → anterior): desliza a
@@ -303,21 +310,21 @@ export default function MuseumCarousel({
         return;
       }
       animate(dragX, -direction * containerWidth, {
-        duration: reducedMotion ? 0 : SETTLE_DURATION,
+        duration: SETTLE_DURATION,
         ease: SETTLE_EASE,
       }).then(() => {
         setMobileIndex((i) => (i + direction + total) % total);
       });
     },
-    [containerWidth, dragX, reducedMotion, total]
+    [containerWidth, dragX, total]
   );
 
   const mobileSnapBack = useCallback(() => {
     animate(dragX, 0, {
-      duration: reducedMotion ? 0 : SETTLE_DURATION,
+      duration: SETTLE_DURATION,
       ease: SETTLE_EASE,
     });
-  }, [dragX, reducedMotion]);
+  }, [dragX]);
 
   const mobileSettleFromOffset = useCallback(
     (offset: number, velocity = 0) => {
