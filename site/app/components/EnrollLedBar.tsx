@@ -6,46 +6,25 @@ import { useEffect, useState } from "react";
  * Botão de inscrição fixo no rodapé do viewport — só mobile. Outline claro
  * (fundo translúcido, borda fina, texto neutro + seta), inspirado numa
  * referência do usuário: um botão retangular onde uma linha desenha a
- * borda inteira ao interagir. Como mobile não tem hover, a linha (SVG,
- * técnica de stroke-dasharray/dashoffset com pathLength=100 pra não
- * depender do perímetro real em px) fica em loop constante — ver
- * `.animate-border-draw` em globals.css. Aparece já no carregamento (não
- * espera rolagem, ao contrário de FloatingCTA.tsx, que cuida só do
- * desktop) e fica montado.
+ * borda inteira ao interagir. No desktop (FloatingCTA.tsx / CTA do hero em
+ * ScrollJaguarSection.tsx) isso acontece de verdade no hover. Aqui no
+ * mobile, sem hover pra disparar sob demanda, a borda fica sempre
+ * desenhada (`strokeDashoffset={0}` fixo) e pulsa de opacidade em loop —
+ * ver `.animate-border-draw` em globals.css. De propósito não anima
+ * `strokeDashoffset` em loop aqui (como uma versão antiga fazia): essa
+ * propriedade força repaint, e isso empilhado num elemento `fixed` (que
+ * já recompõe a cada frame de scroll) reproduziu um bug de renderização
+ * num iPhone 15 Pro Max (tela ProMotion 120Hz) — `opacity` é
+ * compositor-only em qualquer tela, sem esse risco. Aparece já no
+ * carregamento (não espera rolagem, ao contrário de FloatingCTA.tsx) e
+ * fica montado.
  */
 export default function EnrollLedBar() {
   const [visible, setVisible] = useState(false);
-  // Pausa a animação da borda (stroke-dashoffset força repaint, não é uma
-  // propriedade que o compositor acelera) enquanto o usuário está
-  // rolando. Um elemento `fixed` já é caro pro Safari mobile recompor a
-  // cada frame de scroll — empilhar um repaint contínuo em cima disso é
-  // uma causa plausível do botão "deformar"/piscar durante a rolagem,
-  // reproduzido especificamente num iPhone 15 Pro Max (tela ProMotion
-  // 120Hz — não é bug de responsividade/breakpoint, é engine do Safari
-  // recompondo `fixed` mais instável em telas de refresh mais alto).
-  // Também tirado `transform-gpu`/`will-change-transform` que estavam
-  // aqui antes: forçar uma camada de composição própria num elemento
-  // `fixed` no iOS é documentadamente mais causa desse tipo de artefato
-  // do que cura. Volta a rodar 150ms depois que o scroll para.
-  const [scrolling, setScrolling] = useState(false);
 
   useEffect(() => {
     const id = setTimeout(() => setVisible(true), 500);
     return () => clearTimeout(id);
-  }, []);
-
-  useEffect(() => {
-    let idleId: ReturnType<typeof setTimeout>;
-    const onScroll = () => {
-      setScrolling(true);
-      clearTimeout(idleId);
-      idleId = setTimeout(() => setScrolling(false), 150);
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      clearTimeout(idleId);
-    };
   }, []);
 
   return (
@@ -60,11 +39,10 @@ export default function EnrollLedBar() {
       }`}
       style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
-      {/* Borda animada — desenha e recolhe em loop por cima da borda fixa
-          de baixo. Sem `calc()` nos atributos do rect: Safari mobile não
-          resolve calc() de forma confiável em atributos SVG (não-CSS),
-          o que fazia o rect cair pra tamanho inválido e a linha nem
-          aparecer — só x/y/width/height simples (100%), sem inset. */}
+      {/* Sem `calc()` nos atributos do rect: Safari mobile não resolve
+          calc() de forma confiável em atributos SVG (não-CSS), o que
+          fazia o rect cair pra tamanho inválido e a linha nem aparecer —
+          só x/y/width/height simples (100%), sem inset. */}
       <svg
         aria-hidden
         className="pointer-events-none absolute inset-0 h-full w-full"
@@ -86,8 +64,8 @@ export default function EnrollLedBar() {
           strokeWidth="1.5"
           pathLength={100}
           strokeDasharray={100}
+          strokeDashoffset={0}
           className="animate-border-draw"
-          style={{ animationPlayState: scrolling ? "paused" : "running" }}
         />
       </svg>
 
