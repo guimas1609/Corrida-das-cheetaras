@@ -210,53 +210,38 @@ body {
   animation: side-line-drift 5s ease-in-out infinite;
 }
 
-/* Borda em gradiente do botão de inscrição mobile (EnrollLedBar.tsx),
-   100% CSS — sem SVG. Depois de vários bugs de renderização ligados a SVG
-   nesse componente num iPhone específico (calc() em atributo SVG
-   ignorado, tamanho intrínseco de SVG sem width/height explícitos
-   "vazando" pro cálculo de auto-sizing do pai), a borda virou esse
-   `::before` — técnica padrão de "gradiente só na borda" sem precisar de
-   SVG, `calc()` em atributo não-CSS ou gradiente por elemento. NÃO usa
-   `-webkit-mask`/`mask-composite` (abordagem anterior): essa combinação
-   com `position: fixed` no elemento pai deforma a borda no Chrome Android
-   durante o repaint que acontece ao rolar (viewport recalculado quando a
-   barra de endereço some/aparece) — o botão renderiza esticado/borrado
-   especificamente aí, mesmo correto no Safari. Em vez disso o `::before`
-   é uma camada sólida cheia do gradiente, atrás; o `span` interno (ver
-   EnrollLedBar.tsx) tem fundo branco opaco e `margin: 1.5px`, revelando
-   só o anel — nenhuma máscara envolvida. Aplicada via classe
-   `.enroll-gradient-border` no botão (`relative`, já que agora o
-   `::before` precisa de um ancestral posicionado próprio em vez de
-   herdar o `fixed` do pai). Sem hover no mobile pra disparar a borda sob
-   demanda (isso já acontece de verdade no desktop — FloatingCTA.tsx / CTA
-   do hero, via stroke-dashoffset + transition, um SVG simples sem
-   gradiente que nunca deu problema), então aqui é um pulso de opacidade
-   em loop — direto no `::before`, já que pseudo-elemento não recebe
-   className do React pra levar uma classe de animação separada. */
-.enroll-gradient-border::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  border-radius: inherit;
-  background: var(--gradient-cheetara);
-  pointer-events: none;
-  animation: border-draw-loop 2.4s ease-in-out infinite;
+/* Traço da borda do botão de inscrição mobile (EnrollLedBar.tsx) desenhando
+   e recolhendo em loop — mesma técnica SVG do desktop (FloatingCTA.tsx / CTA
+   do hero: stroke-dasharray + stroke-dashoffset, pathLength=100 pra não
+   depender do perímetro real em px), só que em loop automático em vez de só
+   no hover (mobile não tem hover). Duas tentativas 100% CSS (sem SVG)
+   vieram antes desta: uma borda com `-webkit-mask`/`mask-composite`, que
+   deforma no Chrome Android durante o repaint do scroll; depois uma faixa
+   de cor animada via `background-position`, que não reproduzia o efeito de
+   linha se desenhando. Ver comentário no topo de EnrollLedBar.tsx pra como
+   o SVG evita o bug antigo que o tirou de cena da primeira vez. */
+@keyframes border-draw-loop {
+  0% {
+    stroke-dashoffset: 100;
+  }
+  40% {
+    stroke-dashoffset: 0;
+  }
+  60% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: 100;
+  }
 }
 
-@keyframes border-draw-loop {
-  0%,
-  100% {
-    opacity: 0.35;
-  }
-  50% {
-    opacity: 1;
-  }
+.animate-border-draw {
+  animation: border-draw-loop 3.2s ease-in-out infinite;
 }
 
 /* Reduz movimento: textos letra-por-letra (RevealText.tsx) aparecem
-   direto, sem stagger nem transição; a borda em gradiente do CTA fica
-   estática (visível, sem pulsar). */
+   direto, sem stagger nem transição; a borda animada do CTA mobile fica
+   estática (recolhida). */
 @media (prefers-reduced-motion: reduce) {
   .reveal-text-char {
     transition: none !important;
@@ -264,8 +249,8 @@ body {
     transform: none !important;
   }
 
-  .enroll-gradient-border::before {
+  .animate-border-draw {
     animation: none !important;
-    opacity: 1 !important;
+    stroke-dashoffset: 100 !important;
   }
 }
