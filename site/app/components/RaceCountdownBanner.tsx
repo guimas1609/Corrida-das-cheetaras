@@ -6,25 +6,15 @@ import { useEffect, useState } from "react";
 const RACE_DATE = new Date(2026, 7, 29);
 const DAY_MS = 86_400_000;
 
-// Faixa quadriculada (padrão de bandeira/linha de largada) via CSS puro —
-// dois `repeating-linear-gradient` cruzados formam o tabuleiro, sem
-// precisar de nenhum asset de imagem novo.
-const CHECKERED_PATTERN = {
-  backgroundImage: [
-    "repeating-linear-gradient(45deg, #000 0 6px, transparent 6px 12px)",
-    "repeating-linear-gradient(-45deg, #000 0 6px, transparent 6px 12px)",
-  ].join(", "),
-  backgroundColor: "#fff",
-  backgroundSize: "12px 12px",
-};
-
 /**
- * Placa de contagem regressiva — só mobile, pendurada visualmente abaixo
- * da navbar do hero, como se fosse uma faixa de linha de chegada. Calcula
- * os dias no client (useEffect, não no render): `Date.now()` no render
- * causaria incompatibilidade de hidratação entre o que o servidor
- * calculou e o que o client recalcula ao montar. Some/aparece uma vez ao
- * carregar (não é sticky, não recolhe sozinha depois).
+ * Contagem regressiva — só mobile, pendurada visualmente abaixo da navbar
+ * do hero, como um pórtico de linha de largada (duas hastes + um cabo com
+ * leve caimento no topo, remetendo às treliças reais da foto de fundo) com
+ * o número flutuando no meio, sem placa/fundo atrás. Calcula os dias no
+ * client (useEffect, não no render): `Date.now()` no render causaria
+ * incompatibilidade de hidratação entre o que o servidor calculou e o que
+ * o client recalcula ao montar. Aparece uma vez ao carregar (não é sticky,
+ * não recolhe sozinha depois).
  */
 export default function RaceCountdownBanner() {
   const [daysLeft, setDaysLeft] = useState<number | null>(null);
@@ -48,22 +38,52 @@ export default function RaceCountdownBanner() {
   return (
     <div
       aria-hidden={!visible}
-      className={`absolute top-20 left-1/2 z-20 -translate-x-1/2 overflow-hidden rounded-2xl shadow-[0_12px_30px_rgba(0,0,0,0.35)] transition-all duration-700 ease-out sm:hidden ${
+      className={`absolute top-20 left-1/2 z-20 -translate-x-1/2 transition-all duration-700 ease-out sm:hidden ${
         visible ? "translate-y-0 opacity-100" : "-translate-y-24 opacity-0"
       }`}
     >
-      {/* Faixa quadriculada no topo — remete à linha de chegada. */}
-      <div aria-hidden className="h-2.5 w-full" style={CHECKERED_PATTERN} />
+      <div className="relative h-[90px] w-[280px]">
+        {/* Pórtico: duas hastes + cabo com leve caimento no topo — cinza
+            metálico, fino, remetendo às treliças reais da foto de fundo em
+            vez de uma placa sólida "brutona". */}
+        <svg
+          aria-hidden
+          viewBox="0 0 280 90"
+          className="absolute inset-0 h-full w-full"
+          fill="none"
+        >
+          <path
+            d="M20 20 Q140 48 260 20"
+            stroke="#9CA3AF"
+            strokeWidth="3"
+            strokeLinecap="round"
+          />
+          <line x1="20" y1="18" x2="20" y2="90" stroke="#9CA3AF" strokeWidth="3" strokeLinecap="round" />
+          <line
+            x1="260"
+            y1="18"
+            x2="260"
+            y2="90"
+            stroke="#9CA3AF"
+            strokeWidth="3"
+            strokeLinecap="round"
+          />
+        </svg>
 
-      <div className="flex flex-col items-center gap-0.5 bg-neutral-900 px-6 py-3">
-        <span className="text-3xl font-black text-gradient-cheetara">{daysLeft}</span>
-        <span className="text-[11px] font-semibold tracking-widest text-white/80 uppercase">
-          dias pra corrida
-        </span>
+        {/* Número flutua no meio, sem placa atrás — só o texto em vermelho,
+            com uma sombra escura pra continuar legível em qualquer trecho
+            da foto. */}
+        <div className="absolute inset-x-0 top-10 flex flex-col items-center">
+          <span
+            className="text-4xl font-black text-red-600 [text-shadow:0_2px_8px_rgba(0,0,0,0.55)]"
+          >
+            {daysLeft}
+          </span>
+          <span className="text-[11px] font-bold tracking-widest text-red-600 uppercase [text-shadow:0_1px_4px_rgba(0,0,0,0.55)]">
+            dias pra corrida
+          </span>
+        </div>
       </div>
-
-      {/* Faixa quadriculada embaixo também, fechando a moldura. */}
-      <div aria-hidden className="h-2.5 w-full" style={CHECKERED_PATTERN} />
     </div>
   );
 }
