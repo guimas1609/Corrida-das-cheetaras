@@ -428,9 +428,9 @@ export default function MuseumCarousel({
       <div className="text-center">
         <RevealText
           as="h2"
-          className="block text-4xl font-bold tracking-tight text-gradient-cheetara sm:text-6xl md:text-7xl"
+          className="block text-4xl leading-[1.15] font-bold tracking-tight text-gradient-cheetara sm:text-6xl md:text-7xl"
         >
-          Museu Cheetaras
+          Edições Cheetaras
         </RevealText>
         <RevealText
           as="span"
