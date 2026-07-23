@@ -282,8 +282,16 @@ export default function MuseumCarousel({
   // ver comentário completo no mobileAdvance. Roda sempre (não só quando
   // !isDesktop): inofensivo quando o deck está ativo, e assim não precisa
   // de guarda condicional pra respeitar as Rules of Hooks.
+  //
+  // `.jump()`, não `.set()`: o salto de -containerWidth pra 0 é
+  // instantâneo (1 frame), e `.set()` deixa esse salto entrar no cálculo
+  // de velocidade do dragVelocity/skewX como se fosse um arraste
+  // absurdamente rápido — dava um pico de skew de 1 frame bem no
+  // instante da troca, uma tremida/piscada visível. `.jump()` reseta a
+  // velocidade rastreada junto (ver MotionValue.jump em motion-dom),
+  // então o dragX chega em 0 "limpo", sem esse pico.
   useIsomorphicLayoutEffect(() => {
-    dragX.set(0);
+    dragX.jump(0);
   }, [mobileIndex, dragX]);
 
   // O carrossel mobile NÃO segue `reducedMotion` (ao contrário do deck):
