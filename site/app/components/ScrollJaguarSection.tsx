@@ -3,6 +3,7 @@ import HeroLogo from "./HeroLogo";
 import SiteMenu from "./SiteMenu";
 import SideLines from "./SideLines";
 import CursorGlow from "./CursorGlow";
+import RaceCountdownBanner from "./RaceCountdownBanner";
 
 // Fundo do hero é sempre foto real da corrida (organizador, via proxy do
 // Drive) — uma versão pro mobile, outra pro desktop. Fica dentro desta
@@ -37,6 +38,10 @@ export default function ScrollJaguarSection() {
         />
         <SiteMenu />
       </header>
+
+      {/* Placa de contagem regressiva — só mobile (teste), pendurada
+          abaixo da navbar. */}
+      <RaceCountdownBanner />
 
       {/* Foto de fundo: alto brilho, baixa saturação, contraste moderado —
           leve, nunca dramática. Zoom lento tipo Ken Burns, contido pelo
