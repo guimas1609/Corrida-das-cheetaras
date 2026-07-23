@@ -41,18 +41,23 @@ export default function SiteMenu() {
         onClick={() => setOpen((v) => !v)}
         className="flex flex-col gap-1.5 p-1"
       >
+        {/* Cor sólida, não bg-gradient-cheetara: cada barra é curta e fina
+            (h-0.5), então o gradiente rosa→roxo aplicado individualmente
+            em cada uma virava ponta colorida (rosa numa ponta, roxo na
+            outra) nas 4 pontas do X depois de rotacionar — no Safari
+            iOS isso renderizava como "pontinhos" em vez de um X limpo. */}
         <span
-          className={`h-0.5 w-7 rounded-full bg-gradient-cheetara transition-transform duration-300 ${
+          className={`h-0.5 w-7 rounded-full bg-cheetara-purple transition-transform duration-300 ${
             open ? "translate-y-2 rotate-45" : ""
           }`}
         />
         <span
-          className={`h-0.5 w-7 rounded-full bg-gradient-cheetara transition-opacity duration-300 ${
+          className={`h-0.5 w-7 rounded-full bg-cheetara-purple transition-opacity duration-300 ${
             open ? "opacity-0" : ""
           }`}
         />
         <span
-          className={`h-0.5 w-7 rounded-full bg-gradient-cheetara transition-transform duration-300 ${
+          className={`h-0.5 w-7 rounded-full bg-cheetara-purple transition-transform duration-300 ${
             open ? "-translate-y-2 -rotate-45" : ""
           }`}
         />
