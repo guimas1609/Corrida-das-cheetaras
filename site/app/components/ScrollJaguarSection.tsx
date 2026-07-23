@@ -5,11 +5,14 @@ import SideLines from "./SideLines";
 import CursorGlow from "./CursorGlow";
 import RaceCountdownBanner from "./RaceCountdownBanner";
 
-// Fundo do hero é sempre foto real da corrida (organizador, via proxy do
-// Drive) — uma versão pro mobile, outra pro desktop. Fica dentro desta
-// seção (h-screen), não no fundo global — assim some assim que rola pra
-// próxima seção e volta pro holográfico (HolographicBackground.tsx).
-const BG_IMAGE_MOBILE = "/api/drive-image?id=1ZI1NzWXc09eyG-BhC6xhsMCPH9stvqUz&w=1200";
+// Fundo do hero: vídeo real da corrida no mobile (loop, mudo — ver
+// public/video/), foto no desktop (organizador, via proxy do Drive). Fica
+// dentro desta seção (h-screen), não no fundo global — assim some assim
+// que rola pra próxima seção e volta pro holográfico
+// (HolographicBackground.tsx). O vídeo é servido estático de public/video/
+// (não via proxy do Drive) porque precisa de Range requests pra dar seek,
+// que o Drive não garante (ver CLAUDE.md).
+const BG_VIDEO_MOBILE = "/video/hero-mobile.mp4";
 const BG_IMAGE_DESKTOP = "/api/drive-image?id=1iQJr1iNY857BgnCsJEaF7w48OVpIz-fG&w=1920";
 
 // Camada que dissolve a foto em branco nas quatro bordas + vinheta radial
@@ -48,14 +51,19 @@ export default function ScrollJaguarSection() {
         <RaceCountdownBanner />
       </div>
 
-      {/* Foto de fundo: alto brilho, baixa saturação, contraste moderado —
-          leve, nunca dramática. Zoom lento tipo Ken Burns, contido pelo
-          overflow-hidden do wrapper. */}
+      {/* Vídeo de fundo: mesmo tratamento visual (brilho/contraste/
+          saturação) e zoom lento tipo Ken Burns que a foto tinha antes —
+          troca só a fonte, a "vibe" clara/esbranquiçada continua igual.
+          autoPlay+muted+playsInline é o que permite autoplay em iOS/Android
+          sem gesto do usuário; loop fecha o ciclo sem controles visíveis. */}
       <div aria-hidden className="absolute inset-0 overflow-hidden sm:hidden">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={BG_IMAGE_MOBILE}
-          alt=""
+        <video
+          src={BG_VIDEO_MOBILE}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
           className="h-full w-full scale-100 animate-hero-zoom object-cover brightness-[1.4] contrast-[0.9] saturate-[0.2]"
         />
       </div>

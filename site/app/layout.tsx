@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import HolographicBackground from "./components/HolographicBackground";
+import WaveLines from "./components/WaveLines";
 import CursorGlow from "./components/CursorGlow";
 import "./globals.css";
 
@@ -31,6 +32,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <HolographicBackground />
+        <WaveLines />
         <CursorGlow />
         {children}
       </body>

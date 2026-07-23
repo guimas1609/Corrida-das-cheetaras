@@ -26,6 +26,13 @@
 }
 
 body {
+  /* `relative` de propósito: dá ao <body> um containing block com a altura
+     real do documento inteiro, não só da viewport — é o que permite o
+     `absolute inset-0` de WaveLines.tsx cobrir a página toda e rolar junto
+     com o conteúdo (ver .wave-lines-bg). Sem isso, `absolute` sem ancestral
+     posicionado usa o initial containing block (tamanho da viewport),
+     ficando preso ao topo da primeira tela em vez de acompanhar a rolagem. */
+  position: relative;
   background: transparent;
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
@@ -68,6 +75,29 @@ body {
       transparent 90px
     ),
     linear-gradient(135deg, #f7f4f8, #eef0f6 45%, #f6f0f2 100%);
+}
+
+/* Ondas finas dando profundidade sutil — padrão de linhas onduladas
+   (rosa/roxo, cores da marca) repetido em baixa opacidade, atrás de todo o
+   conteúdo e das fotos. Ao contrário do .holographic-bg (fixo, sempre a
+   mesma parte do padrão colada na tela), esta camada é `absolute` dentro
+   do <body> (ver WaveLines.tsx) — rola junto com a página, revelando
+   trechos novos do padrão conforme desce, em vez de "seguir" o usuário.
+   Sem `position` aqui de propósito, mesmo motivo do comentário em
+   .holographic-bg: o componente já aplica `absolute` via Tailwind. */
+.wave-lines-bg {
+  opacity: 0.09;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='90'%3E%3Cpath d='M0 25 C 60 0, 60 50, 120 25 C 180 0, 180 50, 240 25' fill='none' stroke='%23f02090' stroke-width='1'/%3E%3Cpath d='M0 65 C 60 40, 60 90, 120 65 C 180 40, 180 90, 240 65' fill='none' stroke='%23602088' stroke-width='1'/%3E%3C/svg%3E");
+  background-size: 240px 90px;
+  /* Apaga as ondas no centro da tela (onde ficam as fotos/conteúdo
+     principal), mais visíveis nas bordas. `mask-attachment: fixed` prende
+     a máscara na viewport mesmo com o padrão por trás rolando — sem isso o
+     centro do fade ficaria preso a um ponto fixo do documento em vez de
+     acompanhar o centro da tela conforme rola. */
+  mask-image: radial-gradient(60% 55% at 50% 50%, transparent 0%, transparent 25%, black 75%);
+  mask-attachment: fixed;
+  -webkit-mask-image: radial-gradient(60% 55% at 50% 50%, transparent 0%, transparent 25%, black 75%);
+  -webkit-mask-attachment: fixed;
 }
 
 /* Grão fino por cima das manchas, pra tirar o aspecto "liso demais". */
