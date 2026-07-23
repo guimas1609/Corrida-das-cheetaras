@@ -59,7 +59,7 @@ export default function SiteMenu() {
       </button>
 
       <div
-        className={`absolute right-0 top-full mt-3 w-56 origin-top-right rounded-2xl border border-black/5 bg-white/95 p-2 shadow-lg backdrop-blur-sm transition-all duration-200 ${
+        className={`absolute right-0 top-full z-30 mt-3 w-56 origin-top-right rounded-2xl border border-black/5 bg-white/95 p-2 shadow-lg backdrop-blur-sm transition-all duration-200 ${
           open ? "scale-100 opacity-100" : "pointer-events-none scale-95 opacity-0"
         }`}
       >

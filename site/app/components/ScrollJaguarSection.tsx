@@ -28,20 +28,25 @@ export default function ScrollJaguarSection() {
   return (
     <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-background sm:bg-transparent">
       {/* Navbar flutuante, discreta — leve translucidez e blur suave, sem
-          competir com o hero claro. */}
-      <header className="absolute inset-x-4 top-4 z-20 flex items-center justify-between rounded-2xl border border-black/5 bg-white/50 px-5 py-3 shadow-sm backdrop-blur-sm sm:inset-x-8 sm:top-6">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/logo/cheetaras-mark.png"
-          alt="Corrida das Cheetaras"
-          className="h-9 w-9"
-        />
-        <SiteMenu />
-      </header>
+          competir com o hero claro. Agrupada num wrapper com a placa de
+          contagem regressiva pra elas nascerem com a mesma largura e
+          cantos emendados, em vez de duas posições absolutas "chutadas"
+          independentemente. */}
+      <div className="absolute inset-x-4 top-4 z-20 sm:inset-x-8 sm:top-6">
+        <header className="relative flex items-center justify-between rounded-t-2xl border border-black/5 bg-white/50 px-5 py-3 shadow-sm backdrop-blur-sm">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo/cheetaras-mark.png"
+            alt="Corrida das Cheetaras"
+            className="h-9 w-9"
+          />
+          <SiteMenu />
+        </header>
 
-      {/* Placa de contagem regressiva — só mobile (teste), pendurada
-          abaixo da navbar. */}
-      <RaceCountdownBanner />
+        {/* Placa de contagem regressiva, presa embaixo da navbar (mobile
+            e desktop). */}
+        <RaceCountdownBanner />
+      </div>
 
       {/* Foto de fundo: alto brilho, baixa saturação, contraste moderado —
           leve, nunca dramática. Zoom lento tipo Ken Burns, contido pelo
