@@ -21,7 +21,13 @@ const MOBILE_ADVANCE_THRESHOLD_RATIO = 0.25; // % da largura do card que precisa
 
 // Só desktop usa essas — o deck com profundidade (fotos vizinhas
 // escaladas/borradas espiando do lado).
-const DESKTOP_SLIDE_GAP = 340; // px entre os centros de dois slides vizinhos
+// px entre os centros de dois slides vizinhos. A vizinha encolhe pra 82%
+// (scale 0.82) em torno do próprio centro, então mesmo com esse gap ela
+// "recua" visualmente uns 30px do card ao lado — por isso o gap é bem
+// menor que a largura do card (352px, DESKTOP_SLIDE_WIDTH_CLASS), com
+// bastante margem de sobreposição pra nunca sobrar vão branco entre a
+// central e a vizinha, mesmo durante a animação de transição.
+const DESKTOP_SLIDE_GAP = 260;
 const DESKTOP_SLIDE_WIDTH_CLASS = "w-[22rem]";
 const DESKTOP_TRACK_HEIGHT_CLASS = "h-[40rem]";
 
@@ -91,12 +97,25 @@ function DeckSlide({
   const initialIsCenter = Math.abs(offset.get()) < 0.05;
   const isCenterRef = useRef(initialIsCenter);
   const [isCenter, setIsCenter] = useState(initialIsCenter);
+  // Lado de onde a foto está em relação ao centro — o fade de opacidade só
+  // faz sentido na borda EXTERNA (a que o overflow-x-hidden do container
+  // corta), não na borda voltada pro centro. Desvanecer os dois lados
+  // igualmente deixava um vão branco enorme entre a foto central e a
+  // vizinha, bem maior que o espaço geométrico real entre elas.
+  const initialSide = offset.get() < -0.05 ? "left" : offset.get() > 0.05 ? "right" : "center";
+  const sideRef = useRef<"left" | "right" | "center">(initialSide);
+  const [side, setSide] = useState(initialSide);
   useEffect(() => {
     return offset.on("change", (o) => {
       const center = Math.abs(o) < 0.05;
       if (center !== isCenterRef.current) {
         isCenterRef.current = center;
         setIsCenter(center);
+      }
+      const nextSide = o < -0.05 ? "left" : o > 0.05 ? "right" : "center";
+      if (nextSide !== sideRef.current) {
+        sideRef.current = nextSide;
+        setSide(nextSide);
       }
     });
   }, [offset]);
@@ -112,16 +131,17 @@ function DeckSlide({
         aria-hidden={!isCenter}
         tabIndex={isCenter ? 0 : -1}
         whileHover={isCenter ? { scale: 1.03 } : undefined}
-        style={
-          isCenter
-            ? undefined
-            : {
-                maskImage:
-                  "linear-gradient(to right, transparent 0%, black 30%, black 70%, transparent 100%)",
-                WebkitMaskImage:
-                  "linear-gradient(to right, transparent 0%, black 30%, black 70%, transparent 100%)",
-              }
-        }
+        style={(() => {
+          if (isCenter || side === "center") return undefined;
+          // Só a borda externa desvanece — a interna (voltada pro
+          // centro) fica opaca até encostar/sobrepor a foto central, sem
+          // vão branco entre as duas.
+          const gradient =
+            side === "left"
+              ? "linear-gradient(to right, transparent 0%, black 30%, black 100%)"
+              : "linear-gradient(to right, black 0%, black 70%, transparent 100%)";
+          return { maskImage: gradient, WebkitMaskImage: gradient };
+        })()}
         className={`block h-full w-full overflow-hidden rounded-3xl transition-shadow duration-300 ${
           isCenter
             ? "cursor-grab shadow-[0_10px_24px_rgba(96,32,136,0.18)] active:cursor-grabbing"
@@ -553,14 +573,14 @@ export default function MuseumCarousel({
             </button>
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex gap-2">
             {photos.map((photo, i) => (
               <button
                 key={photo}
                 type="button"
                 aria-label={`Ir para foto ${i + 1}`}
                 onClick={() => mobileGoToIndex(i)}
-                className={`h-3.5 w-3.5 rounded-full transition-colors ${
+                className={`h-2 w-2 rounded-full transition-colors ${
                   i === mobileIndex ? "bg-gradient-cheetara" : "bg-black/15"
                 }`}
               />
