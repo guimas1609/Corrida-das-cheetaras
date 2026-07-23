@@ -31,6 +31,18 @@ body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
+/* Cursor customizado (ícone da logo, cabeça do jaguar) só no desktop —
+   mesmo corte de breakpoint do `sm:` do Tailwind (640px). Elementos com
+   `cursor-pointer` explícito (alças do MuseumCarousel, HeroLogo) continuam
+   mostrando o cursor de sistema, já que uma declaração de `cursor` direto
+   no elemento tem prioridade sobre o valor herdado daqui. Hotspot no
+   centro da imagem (80x63px) por não ser uma seta com "bico". */
+@media (min-width: 640px) {
+  body {
+    cursor: url("/cursor/cheetaras-cursor.png") 40 32, auto;
+  }
+}
+
 /* Fundo claro/holográfico compartilhado por todo o site, inspirado em
    referência visual do organizador (textura perolada com reflexos
    iridescentes, tipo papel de parede iOS). Fica fixo atrás de tudo — ver
