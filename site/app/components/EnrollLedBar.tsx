@@ -15,10 +15,31 @@ import { useEffect, useState } from "react";
  */
 export default function EnrollLedBar() {
   const [visible, setVisible] = useState(false);
+  // Pausa a animação da borda (stroke-dashoffset força repaint, não é uma
+  // propriedade que o compositor acelera) enquanto o usuário está
+  // rolando. Um elemento `fixed` já é caro pro Safari mobile recompor a
+  // cada frame de scroll — empilhar um repaint contínuo em cima disso é o
+  // que fazia o botão "deformar"/piscar durante a rolagem. Volta a rodar
+  // 150ms depois que o scroll para.
+  const [scrolling, setScrolling] = useState(false);
 
   useEffect(() => {
     const id = setTimeout(() => setVisible(true), 500);
     return () => clearTimeout(id);
+  }, []);
+
+  useEffect(() => {
+    let idleId: ReturnType<typeof setTimeout>;
+    const onScroll = () => {
+      setScrolling(true);
+      clearTimeout(idleId);
+      idleId = setTimeout(() => setScrolling(false), 150);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      clearTimeout(idleId);
+    };
   }, []);
 
   return (
@@ -60,6 +81,7 @@ export default function EnrollLedBar() {
           pathLength={100}
           strokeDasharray={100}
           className="animate-border-draw"
+          style={{ animationPlayState: scrolling ? "paused" : "running" }}
         />
       </svg>
 
