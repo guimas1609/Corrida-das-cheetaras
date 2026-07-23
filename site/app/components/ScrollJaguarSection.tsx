@@ -1,4 +1,5 @@
 import Reveal from "./Reveal";
+import HeroBackgroundVideo from "./HeroBackgroundVideo";
 import HeroLogo from "./HeroLogo";
 import SiteMenu from "./SiteMenu";
 import SideLines from "./SideLines";
@@ -54,16 +55,12 @@ export default function ScrollJaguarSection() {
       {/* Vídeo de fundo: mesmo tratamento visual (brilho/contraste/
           saturação) e zoom lento tipo Ken Burns que a foto tinha antes —
           troca só a fonte, a "vibe" clara/esbranquiçada continua igual.
-          autoPlay+muted+playsInline é o que permite autoplay em iOS/Android
-          sem gesto do usuário; loop fecha o ciclo sem controles visíveis. */}
+          Autoplay forçado via ref em HeroBackgroundVideo.tsx (ver
+          componente pro motivo — `muted`/`playsInline` sozinhos no JSX não
+          bastam no mobile). */}
       <div aria-hidden className="absolute inset-0 overflow-hidden sm:hidden">
-        <video
+        <HeroBackgroundVideo
           src={BG_VIDEO_MOBILE}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
           className="h-full w-full scale-100 animate-hero-zoom object-cover brightness-[1.4] contrast-[0.9] saturate-[0.2]"
         />
       </div>
