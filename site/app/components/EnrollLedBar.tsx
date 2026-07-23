@@ -18,9 +18,15 @@ export default function EnrollLedBar() {
   // Pausa a animação da borda (stroke-dashoffset força repaint, não é uma
   // propriedade que o compositor acelera) enquanto o usuário está
   // rolando. Um elemento `fixed` já é caro pro Safari mobile recompor a
-  // cada frame de scroll — empilhar um repaint contínuo em cima disso é o
-  // que fazia o botão "deformar"/piscar durante a rolagem. Volta a rodar
-  // 150ms depois que o scroll para.
+  // cada frame de scroll — empilhar um repaint contínuo em cima disso é
+  // uma causa plausível do botão "deformar"/piscar durante a rolagem,
+  // reproduzido especificamente num iPhone 15 Pro Max (tela ProMotion
+  // 120Hz — não é bug de responsividade/breakpoint, é engine do Safari
+  // recompondo `fixed` mais instável em telas de refresh mais alto).
+  // Também tirado `transform-gpu`/`will-change-transform` que estavam
+  // aqui antes: forçar uma camada de composição própria num elemento
+  // `fixed` no iOS é documentadamente mais causa desse tipo de artefato
+  // do que cura. Volta a rodar 150ms depois que o scroll para.
   const [scrolling, setScrolling] = useState(false);
 
   useEffect(() => {
@@ -47,7 +53,7 @@ export default function EnrollLedBar() {
       href="#museu"
       aria-label="Inscreva-se"
       aria-hidden={!visible}
-      className={`fixed inset-x-4 bottom-20 z-40 mx-auto max-w-[220px] transform-gpu rounded-xl border border-black/10 bg-white/95 shadow-sm transition-[transform,opacity] duration-300 will-change-transform sm:hidden ${
+      className={`fixed inset-x-4 bottom-20 z-40 mx-auto max-w-[220px] rounded-xl border border-black/10 bg-white/95 shadow-sm transition-[transform,opacity] duration-300 sm:hidden ${
         visible
           ? "translate-y-0 opacity-100"
           : "pointer-events-none translate-y-4 opacity-0"
