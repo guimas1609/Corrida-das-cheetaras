@@ -33,10 +33,14 @@ export default function Home() {
 
       <footer className="flex flex-col items-center gap-3 px-6 py-16 text-center">
         <span className="h-[3px] w-24 rounded-full bg-gradient-cheetara" />
-        <p className="max-w-md text-base text-muted-foreground">
-          Site em construção — em breve, mais novidades sobre a Corrida das
-          Cheetaras.
-        </p>
+        <a
+          href="https://wa.me/5548984652552"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rounded-full border border-black/10 bg-white/60 px-4 py-2 text-sm text-muted-foreground backdrop-blur-sm transition hover:border-cheetara-pink/40 hover:text-foreground"
+        >
+          Criado por <span className="text-gradient-cheetara font-medium">Paulo Fonz Guimarães</span>
+        </a>
       </footer>
     </div>
   );

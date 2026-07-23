@@ -4,21 +4,34 @@ import { useEffect, useState } from "react";
 
 /**
  * Botão de inscrição que acompanha o usuário na rolagem — some enquanto o
- * hero (que já tem seu próprio CTA) está visível, aparece a partir daí. Só
+ * hero (que já tem seu próprio CTA) está visível, aparece a partir daí, e
+ * some de novo perto do fim da página (senão fica flutuando por cima do
+ * rodapé/crédito no footer, que também tem um link clicável ali). Só
  * desktop: no mobile quem cuida desse papel é EnrollLedBar.tsx (barra fixa
  * no rodapé), pra não empilhar dois CTAs flutuantes. Mesma linguagem
  * visual de EnrollLedBar (outline claro + borda que se desenha em SVG),
  * mas aqui a linha só desenha no hover (`group-hover`) em vez de ficar em
  * loop — desktop tem cursor, não precisa da versão automática.
  */
+const FOOTER_CLEARANCE_PX = 260;
+
 export default function FloatingCTA() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setVisible(window.scrollY > window.innerHeight * 0.7);
+    const onScroll = () => {
+      const pastHero = window.scrollY > window.innerHeight * 0.7;
+      const distanceToBottom =
+        document.documentElement.scrollHeight - (window.scrollY + window.innerHeight);
+      setVisible(pastHero && distanceToBottom > FOOTER_CLEARANCE_PX);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, []);
 
   return (

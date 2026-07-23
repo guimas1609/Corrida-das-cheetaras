@@ -7,17 +7,17 @@ import { useEffect, useState } from "react";
  * (fundo translúcido, borda fina, texto neutro + seta), inspirado numa
  * referência do usuário: um botão retangular onde uma linha desenha a
  * borda inteira ao interagir. No desktop (FloatingCTA.tsx / CTA do hero em
- * ScrollJaguarSection.tsx) isso acontece de verdade no hover. Aqui no
- * mobile, sem hover pra disparar sob demanda, a borda fica sempre
- * desenhada (`strokeDashoffset={0}` fixo) e pulsa de opacidade em loop —
- * ver `.animate-border-draw` em globals.css. De propósito não anima
- * `strokeDashoffset` em loop aqui (como uma versão antiga fazia): essa
- * propriedade força repaint, e isso empilhado num elemento `fixed` (que
- * já recompõe a cada frame de scroll) reproduziu um bug de renderização
- * num iPhone 15 Pro Max (tela ProMotion 120Hz) — `opacity` é
- * compositor-only em qualquer tela, sem esse risco. Aparece já no
- * carregamento (não espera rolagem, ao contrário de FloatingCTA.tsx) e
- * fica montado.
+ * ScrollJaguarSection.tsx) isso acontece de verdade no hover; aqui no
+ * mobile, sem hover pra disparar sob demanda, fica em loop constante — ver
+ * `.animate-border-draw` em globals.css. Aparece já no carregamento (não
+ * espera rolagem, ao contrário de FloatingCTA.tsx) e fica montado.
+ * Centralizado via `left-1/2` + `-translate-x-1/2` (mesma
+ * técnica de FloatingCTA.tsx), não `inset-x-4` + `mx-auto` + `max-w-*`:
+ * essa combinação (left E right definidos + margem automática +
+ * max-width) é uma das partes mais ambíguas da spec de CSS pra elementos
+ * posicionados, com implementações inconsistentes entre motores — foi o
+ * que causava o botão renderizar quase full-width em vez de ~220px num
+ * iPhone 15 Pro Max específico.
  */
 export default function EnrollLedBar() {
   const [visible, setVisible] = useState(false);
@@ -32,10 +32,10 @@ export default function EnrollLedBar() {
       href="#museu"
       aria-label="Inscreva-se"
       aria-hidden={!visible}
-      className={`fixed inset-x-4 bottom-20 z-40 mx-auto max-w-[220px] rounded-xl border border-black/10 bg-white/95 shadow-sm transition-[transform,opacity] duration-300 sm:hidden ${
+      className={`fixed left-1/2 bottom-20 z-40 w-[calc(100%-2rem)] max-w-[220px] rounded-xl border border-black/10 bg-white/95 shadow-sm transition-[transform,opacity] duration-300 sm:hidden ${
         visible
-          ? "translate-y-0 opacity-100"
-          : "pointer-events-none translate-y-4 opacity-0"
+          ? "-translate-x-1/2 translate-y-0 opacity-100"
+          : "pointer-events-none -translate-x-1/2 translate-y-4 opacity-0"
       }`}
       style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
@@ -64,7 +64,6 @@ export default function EnrollLedBar() {
           strokeWidth="1.5"
           pathLength={100}
           strokeDasharray={100}
-          strokeDashoffset={0}
           className="animate-border-draw"
         />
       </svg>

@@ -210,29 +210,30 @@ body {
   animation: side-line-drift 5s ease-in-out infinite;
 }
 
-/* Borda do botão de inscrição (EnrollLedBar.tsx) — no mobile não tem
-   hover pra disparar o "desenhar" sob demanda (esse fica só no hover do
-   FloatingCTA/hero CTA, via stroke-dashoffset + transition, não esse
-   keyframe), então aqui é um pulso de opacidade em loop. De propósito
-   não anima `stroke-dashoffset` aqui: essa propriedade força repaint (não
-   é acelerada por compositor) e, empilhada num elemento `position: fixed`
-   que já precisa recompor a cada frame de scroll, reproduziu um bug de
-   renderização (borda "deformando") num iPhone 15 Pro Max — tela
-   ProMotion 120Hz, que exige recompor 2x mais vezes por segundo que uma
-   tela comum. `opacity` é compositor-only em qualquer tela/engine, sem
-   esse risco. */
+/* Borda do botão de inscrição (EnrollLedBar.tsx) "se desenhando" — no
+   mobile não tem hover pra disparar isso sob demanda, então fica em loop:
+   desenha, segura um instante, recolhe, repete. (Chegou a virar um pulso
+   de opacidade por suspeita de que stroke-dashoffset causava um bug de
+   renderização num iPhone específico — a causa real era outra, CSS de
+   largura/centralização do botão, já corrigida em EnrollLedBar.tsx, então
+   voltou pro efeito original.) */
 @keyframes border-draw-loop {
-  0%,
-  100% {
-    opacity: 0.35;
+  0% {
+    stroke-dashoffset: 100;
   }
-  50% {
-    opacity: 1;
+  40% {
+    stroke-dashoffset: 0;
+  }
+  60% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: 100;
   }
 }
 
 .animate-border-draw {
-  animation: border-draw-loop 2.4s ease-in-out infinite;
+  animation: border-draw-loop 3.2s ease-in-out infinite;
 }
 
 /* Reduz movimento: textos letra-por-letra (RevealText.tsx) aparecem
@@ -247,6 +248,6 @@ body {
 
   .animate-border-draw {
     animation: none !important;
-    opacity: 1 !important;
+    stroke-dashoffset: 100 !important;
   }
 }
